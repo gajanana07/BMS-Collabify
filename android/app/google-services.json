@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "383672008400",
+    "project_id": "collabify-7b43c",
+    "storage_bucket": "collabify-7b43c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:383672008400:android:6481bc4af60694a9f9a8d5",
+        "android_client_info": {
+          "package_name": "rahul.classico"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "383672008400-u42ssu8rs9pbd3s94be9q50d1g13dasl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "rahul.classico",
+            "certificate_hash": "24b15d8169b441095b9a45dfffd60662c64da8c5"
+          }
+        },
+        {
+          "client_id": "383672008400-3486jp0121lta1paphvbf3mfvvsjo3mv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDcQ5LODQOihDs6jg7PFksfz2G46AUibk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "383672008400-3486jp0121lta1paphvbf3mfvvsjo3mv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
