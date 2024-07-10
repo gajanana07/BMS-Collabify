@@ -52,8 +52,8 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
 
     try {
       // Validate the bio length
-      if (_bioController.text.split(' ').length < 70) {
-        _showErrorDialog('Bio must be at least 70 words long.');
+      if (_bioController.text.split(' ').length < 25) {
+        _showErrorDialog('Bio must be at least 25 words long.');
         return;
       }
 
