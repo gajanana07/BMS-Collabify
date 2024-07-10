@@ -25,6 +25,9 @@ class AddProjectPage extends StatefulWidget {
 
 class AddProjectState extends State<AddProjectPage> {
   int _selectedIndex = 0;
+  bool _isCompleted = false;
+  String _projectStatus = 'Just Started';
+
   final TextEditingController _projectNameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _tagsController = TextEditingController();
@@ -40,7 +43,6 @@ class AddProjectState extends State<AddProjectPage> {
           context,
           MaterialPageRoute(builder: (context) => DashboardScreen()),
         );
-        // No change for dashboard, already on the home screen
         break;
       case 1:
         Navigator.push(
@@ -49,7 +51,6 @@ class AddProjectState extends State<AddProjectPage> {
         );
         break;
       case 2:
-
         // Handle add action here
         break;
       case 3:
@@ -70,7 +71,6 @@ class AddProjectState extends State<AddProjectPage> {
         );
         // Handle profile action here
         break;
-      // Handle profile action here
     }
   }
 
@@ -78,9 +78,12 @@ class AddProjectState extends State<AddProjectPage> {
     String projectName = _projectNameController.text;
     String description = _descriptionController.text;
     String tags = _tagsController.text;
-    String client_email = _emailController.text;
+    String clientEmail = _emailController.text;
 
-    if (projectName.isEmpty || description.isEmpty || tags.isEmpty) {
+    if (projectName.isEmpty ||
+        description.isEmpty ||
+        tags.isEmpty ||
+        clientEmail.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill all fields')),
       );
@@ -92,7 +95,9 @@ class AddProjectState extends State<AddProjectPage> {
         'project_name': projectName,
         'description': description,
         'tags': tags,
-        'client_email': client_email,
+        'client_email': clientEmail,
+        'completed': _isCompleted,
+        'status': _projectStatus,
         'timestamp': FieldValue.serverTimestamp(),
       });
       ScaffoldMessenger.of(context).showSnackBar(
@@ -102,11 +107,32 @@ class AddProjectState extends State<AddProjectPage> {
       _descriptionController.clear();
       _tagsController.clear();
       _emailController.clear();
+      setState(() {
+        _isCompleted = false;
+        _projectStatus = 'Just Started';
+      });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to upload project: $e')),
       );
     }
+  }
+
+  Widget _buildRadioButton(String value) {
+    return Row(
+      children: [
+        Radio<String>(
+          value: value,
+          groupValue: _projectStatus,
+          onChanged: (newValue) {
+            setState(() {
+              _projectStatus = newValue!;
+            });
+          },
+        ),
+        Text(value),
+      ],
+    );
   }
 
   @override
@@ -149,6 +175,38 @@ class AddProjectState extends State<AddProjectPage> {
                 labelText: 'Email',
               ),
             ),
+            SizedBox(height: 25.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Completed Project',
+                  style: TextStyle(fontSize: 15),
+                ),
+                Switch(
+                  value: _isCompleted,
+                  onChanged: (value) {
+                    setState(() {
+                      _isCompleted = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              'Project Status',
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildRadioButton('Just Started'),
+                _buildRadioButton('In Progress'),
+                _buildRadioButton('Almost done'),
+              ],
+            ),
             SizedBox(height: 32.0),
             Center(
               child: ElevatedButton(
@@ -188,9 +246,9 @@ class AddProjectState extends State<AddProjectPage> {
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Color(0xFF009FFF), // selected item color
-        unselectedItemColor: Colors.grey, // unselected item color
-        type: BottomNavigationBarType.fixed, // to show all items
+        selectedItemColor: Color(0xFF009FFF),
+        unselectedItemColor: Colors.grey,
+        type: BottomNavigationBarType.fixed,
       ),
     );
   }
