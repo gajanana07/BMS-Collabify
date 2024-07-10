@@ -21,15 +21,37 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> _allWorks = [];
-
   List<Map<String, dynamic>> _filteredWorks = [];
   List<String> _selectedCategories = [];
   int _selectedIndex = 1; // Default selected index for Search screen
+  User? _user;
+  String? _firstName;
+  String? _profileImageUrl;
 
   @override
   void initState() {
     super.initState();
     _fetchWorksFromFirestore();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    _user = FirebaseAuth.instance.currentUser;
+    if (_user != null) {
+      final DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(_user!.uid)
+          .get();
+
+      final data = snapshot.data() as Map<String, dynamic>;
+      print('Fetched user data: $data');
+      setState(() {
+        _firstName = data['firstName'];
+        _profileImageUrl = data['imageUrl'];
+        print(_firstName);
+        print(_profileImageUrl);
+      });
+    }
   }
 
   void _fetchWorksFromFirestore() async {
@@ -46,6 +68,7 @@ class _SearchScreenState extends State<SearchScreen> {
           'timestamp': (data['timestamp'] as Timestamp?)?.toDate().toString() ??
               'No date',
           'email': data['email'] ?? 'No email',
+          'uploader_name': data['uploader_name'] ?? 'Unknown',
         };
       }).toList();
 
@@ -187,23 +210,6 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
       body: Column(
         children: [
-          /*
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(25.0),
-                ),
-              ),
-              onChanged: (query) {
-                _filterWorks();
-              },
-            ),
-          ),*/
           const SizedBox(height: 16.0),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -224,24 +230,9 @@ class _SearchScreenState extends State<SearchScreen> {
               itemCount: _filteredWorks.length,
               itemBuilder: (context, index) {
                 final work = _filteredWorks[index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 8.0),
-                  child: ListTile(
-                    title: Text(work['project_name'] ?? 'No title'),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(work['timestamp'] ?? 'No date'),
-                        Text(work['tags'] ??
-                            'No tags'), // New line to display tags
-                      ],
-                    ),
-                    trailing: const Icon(Icons.arrow_forward_ios),
-                    onTap: () {
-                      _navigateToJobPostScreen(work);
-                    },
-                  ),
+                return ProjectCard(
+                  project: work,
+                  onTap: () => _navigateToJobPostScreen(work),
                 );
               },
             ),
@@ -276,6 +267,112 @@ class _SearchScreenState extends State<SearchScreen> {
         selectedItemColor: Color(0xFF009FFF), // selected item color
         unselectedItemColor: Colors.grey, // unselected item color
         type: BottomNavigationBarType.fixed, // to show all items
+      ),
+    );
+  }
+}
+
+class ProjectCard extends StatelessWidget {
+  final Map<String, dynamic> project;
+  final VoidCallback onTap;
+
+  const ProjectCard({required this.project, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      elevation: 3,
+      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Colors.grey,
+                    child: Icon(Icons.person, color: Colors.white),
+                  ),
+                  SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        project['uploader_name'],
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                        ),
+                      ),
+                      Text(
+                        'Student',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Spacer(),
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      backgroundColor: const Color.fromRGBO(33, 150, 243, 1),
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 8.0), // Adjust padding as needed
+                      minimumSize: Size(80, 35),
+                    ),
+                    child: Text('CONNECT', style: TextStyle(fontSize: 13)),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10),
+              Text(
+                project['project_name'],
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
+              ),
+              SizedBox(height: 5),
+              Text(project['description'],
+                  style: TextStyle(
+                    fontSize: 13,
+                  )),
+              SizedBox(height: 15),
+              Wrap(
+                spacing: 10.0,
+                runSpacing: 4.0,
+                children: (project['tags'] as String)
+                    .split(',')
+                    .map((tag) => Chip(
+                          label: Text(
+                            tag.trim(),
+                            style: TextStyle(
+                              fontSize: 13.0, // Adjust font size here
+                            ),
+                          ),
+                          backgroundColor: Colors.blue.shade100,
+                          padding: EdgeInsets.all(4.0), // Adjust padding here
+                          materialTapTargetSize: MaterialTapTargetSize
+                              .shrinkWrap, // Reduce tap target size
+                        ))
+                    .toList(),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -318,48 +415,49 @@ class _FilterScreenState extends State<FilterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Filters'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context, _tempSelectedCategories);
-              },
-              child: const Text(
-                'APPLY',
-                style: TextStyle(color: Colors.black),
-              ),
+      appBar: AppBar(
+        title: const Text('Filters'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, _tempSelectedCategories);
+            },
+            child: const Text(
+              'APPLY',
+              style: TextStyle(color: Colors.black),
             ),
-          ],
-        ),
-        body: FutureBuilder<List<String>>(
-          future: _fetchTagsFromFirestore(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return const Center(child: Text('Error fetching tags'));
-            } else {
-              return ListView(
-                children: snapshot.data!.map((tag) {
-                  return CheckboxListTile(
-                    title: Text(tag),
-                    value: _tempSelectedCategories.contains(tag),
-                    onChanged: (bool? value) {
-                      setState(() {
-                        if (value == true) {
-                          _tempSelectedCategories.add(tag);
-                        } else {
-                          _tempSelectedCategories.remove(tag);
-                        }
-                      });
-                    },
-                  );
-                }).toList(),
-              );
-            }
-          },
-        ));
+          ),
+        ],
+      ),
+      body: FutureBuilder<List<String>>(
+        future: _fetchTagsFromFirestore(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return const Center(child: Text('Error fetching tags'));
+          } else {
+            return ListView(
+              children: snapshot.data!.map((tag) {
+                return CheckboxListTile(
+                  title: Text(tag),
+                  value: _tempSelectedCategories.contains(tag),
+                  onChanged: (bool? value) {
+                    setState(() {
+                      if (value == true) {
+                        _tempSelectedCategories.add(tag);
+                      } else {
+                        _tempSelectedCategories.remove(tag);
+                      }
+                    });
+                  },
+                );
+              }).toList(),
+            );
+          }
+        },
+      ),
+    );
   }
 }
 
