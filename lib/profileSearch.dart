@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ProfileSearchScreen extends StatefulWidget {
@@ -10,6 +11,7 @@ class ProfileSearchScreen extends StatefulWidget {
 class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
   final TextEditingController _profileSearchController =
       TextEditingController();
+<<<<<<< HEAD
   final List<Map<String, dynamic>> _allProfiles = [
     {'name': 'John Doe', 'profilePicUrl': 'https://via.placeholder.com/150'},
     {'name': 'Jane Smith', 'profilePicUrl': 'https://via.placeholder.com/150'},
@@ -25,10 +27,15 @@ class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
   ];
 
   List<Map<String, dynamic>> _filteredProfiles = [];
+=======
+  List<DocumentSnapshot> _profiles = [];
+  String _searchQuery = '';
+>>>>>>> c5a32ebf57b097883c7cfb4e693e455543f1bb6b
 
   @override
   void initState() {
     super.initState();
+<<<<<<< HEAD
     _filteredProfiles = _allProfiles;
   }
 
@@ -42,6 +49,16 @@ class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
           return name.contains(_profileSearchController.text.toLowerCase());
         }).toList();
       }
+=======
+    _fetchProfiles();
+  }
+
+  Future<void> _fetchProfiles() async {
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('users').get();
+    setState(() {
+      _profiles = querySnapshot.docs;
+>>>>>>> c5a32ebf57b097883c7cfb4e693e455543f1bb6b
     });
   }
 
@@ -52,11 +69,20 @@ class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
         title: TextField(
           controller: _profileSearchController,
           decoration: InputDecoration(
+<<<<<<< HEAD
             hintText: 'Search profiles...',
             border: InputBorder.none,
           ),
           onChanged: (query) {
             _filterProfiles();
+=======
+            border: InputBorder.none,
+          ),
+          onChanged: (query) {
+            setState(() {
+              _searchQuery = query;
+            });
+>>>>>>> c5a32ebf57b097883c7cfb4e693e455543f1bb6b
           },
         ),
       ),
@@ -67,18 +93,29 @@ class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
             child: TextField(
               controller: _profileSearchController,
               decoration: InputDecoration(
+<<<<<<< HEAD
                 hintText: 'Search...',
+=======
+                hintText: 'Search Profiles...',
+>>>>>>> c5a32ebf57b097883c7cfb4e693e455543f1bb6b
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25.0),
                 ),
               ),
               onChanged: (query) {
+<<<<<<< HEAD
                 _filterProfiles();
+=======
+                setState(() {
+                  _searchQuery = query;
+                });
+>>>>>>> c5a32ebf57b097883c7cfb4e693e455543f1bb6b
               },
             ),
           ),
           Expanded(
+<<<<<<< HEAD
             child: _filteredProfiles.isEmpty
                 ? Center(child: Text('No profiles found.'))
                 : ListView.builder(
@@ -94,6 +131,34 @@ class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
                       );
                     },
                   ),
+=======
+            child: ListView.builder(
+              itemCount: _profiles.length,
+              itemBuilder: (context, index) {
+                DocumentSnapshot profile = _profiles[index];
+                String name = profile['firstName'];
+                String email = profile['email'];
+
+                if (_searchQuery.isEmpty ||
+                    name.toLowerCase().contains(_searchQuery.toLowerCase())) {
+                  return ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: profile['imageUrl'] != null
+                          ? NetworkImage(profile['imageUrl'])
+                          : null,
+                      child: profile['imageUrl'] == null
+                          ? Icon(Icons.person)
+                          : null,
+                    ),
+                    title: Text(name),
+                    subtitle: Text('$email'),
+                  );
+                } else {
+                  return Container();
+                }
+              },
+            ),
+>>>>>>> c5a32ebf57b097883c7cfb4e693e455543f1bb6b
           ),
         ],
       ),
