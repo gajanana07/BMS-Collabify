@@ -2,6 +2,7 @@ import 'package:classico/addProject.dart';
 import 'package:classico/dashboard.dart';
 import 'package:classico/message1.dart';
 import 'package:classico/profile1.dart';
+import 'package:classico/profileSearch.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -160,8 +161,19 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Search'),
+        title: const Text('Projects'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        ProfileSearchScreen()), // profile search.
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.person),
             onPressed: () {
@@ -175,6 +187,7 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
       body: Column(
         children: [
+          /*
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
@@ -190,7 +203,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 _filterWorks();
               },
             ),
-          ),
+          ),*/
           const SizedBox(height: 16.0),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
