@@ -1,11 +1,6 @@
-import 'dart:io' as io;
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:classico/login.dart';
+import 'package:classico/interest_selection_screen.dart';
+import 'package:classico/login.dart'; // Make sure to import your LoginScreen
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -13,63 +8,69 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  XFile? _image;
-  final _auth = FirebaseAuth.instance;
-  final _firestore = FirebaseFirestore.instance;
-  final _storage = FirebaseStorage.instance;
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
-  final _usnController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _descriptionController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  void _navigateToInterestSelection() {
+    // Perform validation
+    final email = _emailController.text;
+    final password = _passwordController.text;
+    final confirmPassword = _confirmPasswordController.text;
 
-    setState(() {
-      _image = pickedFile;
-    });
+    if (!email.endsWith('@bmsce.ac.in')) {
+      _showErrorDialog('Please use a valid BMSCE email address.');
+      return;
+    }
+
+    if (password.length < 7) {
+      _showErrorDialog('Password must be at least 7 characters long.');
+      return;
+    }
+
+    if (password != confirmPassword) {
+      _showErrorDialog('Passwords do not match.');
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => InterestSelectionScreen(
+          username: _usernameController.text,
+          email: email,
+          password: password,
+        ),
+      ),
+    );
   }
 
-  Future<void> _signUp() async {
-    try {
-      final newUser = await _auth.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
+  void _navigateToLogin() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoginScreen(), // Make sure LoginScreen is defined
+      ),
+    );
+  }
 
-      if (newUser.user != null) {
-        String? imageUrl;
-        if (_image != null) {
-          final bytes = await _image!.readAsBytes();
-          final ref = _storage
-              .ref()
-              .child('user_images')
-              .child(newUser.user!.uid + '.jpg');
-          await ref.putData(bytes);
-          imageUrl = await ref.getDownloadURL();
-        }
-
-        await _firestore.collection('users').doc(newUser.user!.uid).set({
-          'firstName': _firstNameController.text,
-          'lastName': _lastNameController.text,
-          'usn': _usnController.text,
-          'email': _emailController.text,
-          'description': _descriptionController.text,
-          'imageUrl': imageUrl,
-        });
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
-        );
-      }
-    } catch (e) {
-      print(e);
-      // Handle errors here, like showing a dialog
-    }
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Error'),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            child: Text('OK'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -82,70 +83,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                GestureDetector(
-                  onTap: _pickImage,
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.blue,
-                    backgroundImage: _image != null
-                        ? (kIsWeb
-                                ? NetworkImage(_image!.path)
-                                : FileImage(io.File(_image!.path)))
-                            as ImageProvider?
-                        : null,
-                    child: _image == null
-                        ? Icon(
-                            Icons.camera_alt,
-                            color: Colors.white,
-                            size: 50,
-                          )
-                        : null,
-                  ),
-                ),
-                SizedBox(height: 24),
-                Text(
-                  'Sign-up',
-                  style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(height: 24),
-                TextField(
-                  controller: _firstNameController,
-                  decoration: InputDecoration(
-                    hintText: 'First name',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: Colors.blue),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0, bottom: 8.0),
+                      child: CircleAvatar(
+                        radius: 40.0,
+                        backgroundImage: AssetImage(
+                            'assets/bmsce.jpg'), // Replace with your logo
+                      ),
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: Colors.blue, width: 2),
+                    Text(
+                      'BMS Collabify',
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
+                  ],
                 ),
                 SizedBox(height: 16),
                 TextField(
-                  controller: _lastNameController,
+                  controller: _usernameController,
                   decoration: InputDecoration(
-                    hintText: 'Last name',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: Colors.blue),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: Colors.blue, width: 2),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 16),
-                TextField(
-                  controller: _usnController,
-                  decoration: InputDecoration(
-                    hintText: 'USN',
+                    hintText: 'Username',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
                       borderSide: BorderSide(color: Colors.blue),
@@ -189,9 +151,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 SizedBox(height: 16),
                 TextField(
-                  controller: _descriptionController,
+                  controller: _confirmPasswordController,
                   decoration: InputDecoration(
-                    hintText: 'Description',
+                    hintText: 'Confirm Password',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
                       borderSide: BorderSide(color: Colors.blue),
@@ -201,16 +163,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       borderSide: BorderSide(color: Colors.blue, width: 2),
                     ),
                   ),
+                  obscureText: true,
                 ),
                 SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: _signUp,
+                  onPressed: _navigateToInterestSelection,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                   ),
                   child: Text(
-                    'Sign-Up',
+                    'Sign Up',
                     style: TextStyle(
                       fontSize: 16.0,
                       color: Colors.white,
@@ -219,15 +182,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 SizedBox(height: 16),
                 TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()),
-                    );
-                  },
+                  onPressed: _navigateToLogin,
                   child: Text(
-                    'You have an account? Log-in',
-                    style: TextStyle(color: Colors.black),
+                    'Already have an account? Log in',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16.0,
+                    ),
                   ),
                 ),
               ],
