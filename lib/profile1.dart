@@ -6,9 +6,9 @@ import 'package:classico/dashboard.dart';
 import 'package:classico/login.dart';
 import 'package:classico/message1.dart';
 import 'package:classico/profile1.dart';
-import 'package:classico/profile2.dart';
+
 import 'package:classico/search.dart';
-import 'package:classico/search3.dart';
+
 import 'package:classico/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';

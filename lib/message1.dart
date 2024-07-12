@@ -24,6 +24,7 @@ class _FeedScreenState extends State<FeedScreen> {
   User? _user;
   String? _firstName;
   String? _profileImageUrl;
+  String? _userName;
   File? _image;
   final ImagePicker _picker = ImagePicker();
 
@@ -78,9 +79,9 @@ class _FeedScreenState extends State<FeedScreen> {
       final data = snapshot.data() as Map<String, dynamic>;
       print('Fetched user data: $data');
       setState(() {
-        _firstName = data['firstName'];
+        _userName = data['username'];
         _profileImageUrl = data['imageUrl'];
-        print(_firstName);
+
         print(_profileImageUrl);
       });
     }
@@ -120,7 +121,7 @@ class _FeedScreenState extends State<FeedScreen> {
         'imageUrl': imageUrl,
         'timestamp': Timestamp.now(),
         'userProfileUrl': _profileImageUrl ?? 'https://via.placeholder.com/150',
-        'username': _firstName ?? 'Anonymous',
+        'username': _userName ?? 'Anonymous',
         'likes': 0, // Initial likes count
         'likedBy': [], // Initialize as empty list
         'comments': [], // Empty array for comments

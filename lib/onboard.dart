@@ -5,9 +5,9 @@ import 'package:classico/addProject.dart';
 import 'package:classico/widget_support.dart';
 import 'package:classico/dashboard.dart';
 import 'package:classico/message1.dart';
-import 'package:classico/message2.dart';
+
 import 'package:classico/profile1.dart';
-import 'package:classico/search3.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'search.dart';

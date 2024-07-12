@@ -535,6 +535,7 @@ class JobPostScreen extends StatelessWidget {
           'project_description': project['description'],
           'project_tags': project['tags'],
           'project_timestamp': project['timestamp'],
+          'project_status': project['status'],
         };
 
         try {
@@ -556,41 +557,99 @@ class JobPostScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(project['project_name'] ?? 'No title'),
+        actions: [
+          ElevatedButton(
+            onPressed: () async {
+              final String email = project['email'] ?? '';
+              final String subject =
+                  'Application for Project: ${project['project_name'] ?? ''}';
+              final String body =
+                  'I would love to work with you on this project.';
+
+              await _applyForProject();
+              _sendWorkViaGmail(email, subject, body);
+            },
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              backgroundColor: const Color.fromRGBO(33, 150, 243, 1),
+              foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(
+                  horizontal: 16.0, vertical: 8.0), // Adjust padding as needed
+              minimumSize: Size(80, 35),
+            ),
+            child: Text('CONNECT', style: TextStyle(fontSize: 13)),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
+              'Client: ${project['name'] ?? 'Unknown'}',
+              style: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 8.0),
+            Text(
+              'Client Email: ${project['email'] ?? 'No email'}',
+              style: TextStyle(
+                fontSize: 16.0,
+              ),
+            ),
+            SizedBox(height: 8.0),
+            Text(
+              'Status: ${project['status'] ?? 'No status'}',
+              style: TextStyle(
+                fontSize: 16.0,
+              ),
+            ),
+            SizedBox(height: 16.0),
+            Text(
               'Description',
               style: TextStyle(
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 16.0),
-            Text(project['description'] ?? 'No description'),
-            const SizedBox(height: 16.0),
-            const Text(
+            SizedBox(height: 8.0),
+            Text(
+              project['description'] ?? 'No description',
+              style: TextStyle(fontSize: 16.0),
+            ),
+            SizedBox(height: 16.0),
+            Text(
               'Skills Required',
               style: TextStyle(
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 16.0),
-            Text(project['tags'] ?? 'No tags'),
-            const SizedBox(height: 16.0),
-            const Text(
-              'Posted On',
+            SizedBox(height: 8.0),
+            Wrap(
+              spacing: 8.0,
+              children: (project['tags'] ?? '')
+                  .split(',')
+                  .map<Widget>((tag) => Chip(
+                        label: Text(tag.trim()),
+                        shape: StadiumBorder(),
+                        backgroundColor: Colors.blue.shade100,
+                      ))
+                  .toList(),
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              'Posted On: ${project['timestamp'] ?? 'No date'}',
               style: TextStyle(
-                fontSize: 20.0,
+                fontSize: 16.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 16.0),
-            Text(project['timestamp'] ?? 'No date'),
             SizedBox(height: 32.0),
             Center(
               child: ElevatedButton(
@@ -604,7 +663,7 @@ class JobPostScreen extends StatelessWidget {
                   await _applyForProject();
                   _sendWorkViaGmail(email, subject, body);
                 },
-                child: Text('Apply for job'),
+                child: Text('Apply'),
                 style: ElevatedButton.styleFrom(
                   padding:
                       EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),

@@ -20,13 +20,13 @@ class InterestSelectionScreen extends StatefulWidget {
 class _InterestSelectionScreenState extends State<InterestSelectionScreen> {
   List<String> _interests = [
     'Technology',
-    'Science',
-    'Music',
-    'Art',
-    'Sports',
-    'Literature',
-    'Gaming',
-    'Travel'
+    'Data Science',
+    'Machine Learning',
+    'Web Dev',
+    'App Development',
+    'Ethical Hacking',
+    'Game Development',
+    'Cybersecurity'
   ];
   List<String> _selectedInterests = [];
 

@@ -5,7 +5,7 @@ import 'package:classico/login.dart';
 import 'package:classico/message1.dart';
 import 'package:classico/onboard.dart';
 import 'package:classico/profile1.dart';
-import 'package:classico/search3.dart';
+
 import 'package:classico/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';

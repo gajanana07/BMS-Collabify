@@ -59,9 +59,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             'tags': data['project_tags'] ?? 'No tags',
             'timestamp':
                 data['project_timestamp'], // Directly store the Timestamp
-            'client_email':
-                data['client_email'] ?? 'No client email', // Add this line
-            'client_id': data['client_id'] ?? '', // Add this line
+            'client_email': data['client_email'] ?? 'No client email',
+            'client_id': data['client_id'] ?? '',
           };
         }).toList();
 
@@ -155,12 +154,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
       String email, String subject, String body) async {
     final Uri gmailUri = Uri(
       scheme: 'https',
-      path: 'ail.google.com/mail/u/0/',
+      path: 'mail.google.com/mail/u/0/',
       queryParameters: {
         'view': 'cm',
         'fs': '1',
         'to': email,
-        'u': subject,
+        'su': subject,
         'body': body,
       },
     );
@@ -246,26 +245,48 @@ class ProjectCard extends StatelessWidget {
 
   ProjectCard({required this.project});
 
+  String _getShortDescription(String description) {
+    const int maxLength = 50;
+    if (description.length <= maxLength) {
+      return description;
+    } else {
+      return '${description.substring(0, maxLength)}...';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     String formattedDate = 'No date';
     if (project['timestamp'] is String) {
       String timestampStr = project['timestamp'] as String;
-      // Extract the date portion from the timestamp string
       formattedDate = timestampStr.split(' ')[0];
     } else {
       print("Timestamp is not a valid String: ${project['timestamp']}");
     }
+
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8.0),
-      child: ListTile(
-        title: Text(project['project_name']),
-        subtitle: Text(project['description']),
-        trailing: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(project['tags']),
-            Text(formattedDate),
+            Text(
+              project['project_name'],
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8.0),
+            Text(_getShortDescription(project['description'])),
+            SizedBox(height: 8.0),
+            Text(
+              project['tags'],
+              style: TextStyle(color: Colors.grey),
+            ),
+            SizedBox(height: 8.0),
+            Text(
+              formattedDate,
+              style: TextStyle(color: Colors.grey),
+            ),
           ],
         ),
       ),
@@ -308,50 +329,52 @@ class ProjectDetailsScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Description',
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 16.0),
-            Text(project['description'] ?? 'No description'),
-            SizedBox(height: 16.0),
-            Text(
-              'Skills Required',
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 16.0),
-            Text(project['tags'] ?? 'No tags'),
-            SizedBox(height: 16.0),
-            Text(
-              'Posted On',
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 16.0),
-            Text(project['timestamp'] ?? 'No date'),
-            SizedBox(height: 32.0),
-            Center(
-              child: ElevatedButton(
-                onPressed: () async {
-                  final String clientEmail = project['client_email'] ??
-                      ''; // Fetch client's email from project
-                  final String subject =
-                      'Application for Project: ${project['project_name'] ?? ''}';
-                  final String body =
-                      'Here are the files which youve asked for';
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Description',
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 16.0),
+              Text(project['description'] ?? 'No description'),
+              SizedBox(height: 16.0),
+              Text(
+                'Skills Required',
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 16.0),
+              Text(project['tags'] ?? 'No tags'),
+              SizedBox(height: 16.0),
+              Text(
+                'Posted On',
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 16.0),
+              Text(project['timestamp'] ?? 'No date'),
+              SizedBox(height: 32.0),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    final String clientEmail = project['client_email'] ??
+                        ''; // Fetch client's email from project
+                    final String subject =
+                        'Application for Project: ${project['project_name'] ?? ''}';
+                    final String body =
+                        'Here are the files which you have asked for';
 
-                  await _sendWorkViaGmail(clientEmail, subject, body);
-                },
-                child: Text('Send Your Work'),
-                style: ElevatedButton.styleFrom(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+                    await _sendWorkViaGmail(clientEmail, subject, body);
+                  },
+                  child: Text('Send Your Work'),
+                  style: ElevatedButton.styleFrom(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
