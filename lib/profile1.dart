@@ -457,6 +457,12 @@ class _ProfileScreenState extends State<ProfileScreen>
             icon: Icon(Icons.logout),
             onPressed: _showLogoutDialog,
           ),
+          IconButton(
+            icon: Icon(Icons.notifications),
+            onPressed: () {
+              // Handle notification action here
+            },
+          ),
         ],
       ),
       body: _userDataFuture != null
