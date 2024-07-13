@@ -400,16 +400,27 @@ class _FilterScreenState extends State<FilterScreen> {
   }
 
   Future<List<String>> _fetchTagsFromFirestore() async {
-    List<String> tags = [];
+    Set<String> tagsSet = {}; // Using a set to ensure uniqueness
+
     await FirebaseFirestore.instance
         .collection('projects')
         .get()
         .then((querySnapshot) {
       querySnapshot.docs.forEach((doc) {
-        tags.add(doc['tags']);
+        String tagsString = doc['tags'];
+        List<String> tags =
+            tagsString.split(',').map((tag) => tag.trim()).toList();
+        tagsSet.addAll(tags); // Adding tags to the set
       });
     });
-    return tags;
+
+    // Convert the set to a list
+    List<String> tagsList = tagsSet.toList();
+
+    // Ensure there are no duplicates in the final list
+    List<String> uniqueTagsList = tagsList.toSet().toList();
+
+    return uniqueTagsList;
   }
 
   @override
