@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:classico/addProject.dart';
 import 'package:classico/dashboard.dart';
-
+import 'package:classico/notification_screen.dart';
 import 'package:classico/message1.dart';
 import 'package:classico/search.dart';
 import 'package:classico/signup.dart';
@@ -391,64 +391,50 @@ class _ProfileScreenState extends State<ProfileScreen>
   }
 
   void _editResume() async {
-    // Request storage permission
-    PermissionStatus status = await Permission.storage.request();
-    if (status.isGranted) {
-      // Pick a file
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['pdf'],
-      );
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
 
-      // Check if a file was picked
-      if (result != null && result.files.isNotEmpty) {
-        File file = File(result.files.single.path!);
-        String fileName = '${_user?.uid}_resume.pdf';
+    if (result != null && result.files.isNotEmpty) {
+      File file = File(result.files.single.path!);
+      String fileName = result.files.single.name;
 
-        try {
-          // Reference to Firebase Storage
-          final Reference storageReference =
-              FirebaseStorage.instance.ref().child('resumes').child(fileName);
-          UploadTask uploadTask = storageReference.putFile(file);
+      // Upload file to Firebase Storage
+      String resumeUrl = await _uploadResumeFile(file, fileName);
 
-          // Wait for upload to complete
-          await uploadTask.whenComplete(() => null);
-
-          // Get the download URL
-          String downloadUrl = await storageReference.getDownloadURL();
-
-          // Update Firestore with the new resume link
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(_user?.uid)
-              .update({'resume': downloadUrl});
-
-          // Update the state
-          setState(() {
-            _resumeLink = downloadUrl;
-          });
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Resume updated successfully.')),
-          );
-        } catch (e) {
-          // Handle upload error
-          print('Failed to upload resume: $e');
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to upload resume: $e')),
-          );
-        }
-      } else {
-        // No file selected
+      // Update Firestore with the new resume URL
+      FirebaseFirestore.instance.collection('users').doc(_user?.uid).update({
+        'resume': resumeUrl,
+      }).then((value) {
+        setState(() {
+          _resumeLink = resumeUrl;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('No file selected.')),
+          SnackBar(content: Text('Resume uploaded successfully')),
         );
-      }
-    } else {
-      // Storage permission denied
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Storage permission denied.')),
-      );
+      }).catchError((error) {
+        print('Failed to upload resume: $error');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to upload resume')),
+        );
+      });
+    }
+  }
+
+  Future<String> _uploadResumeFile(File file, String fileName) async {
+    try {
+      FirebaseStorage storage = FirebaseStorage.instance;
+      Reference ref =
+          storage.ref().child('resumes').child(_user!.uid).child(fileName);
+      UploadTask uploadTask = ref.putFile(file);
+
+      TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
+      String downloadURL = await taskSnapshot.ref.getDownloadURL();
+      return downloadURL;
+    } catch (e) {
+      print('Error uploading resume: $e');
+      return '';
     }
   }
 
@@ -526,7 +512,10 @@ class _ProfileScreenState extends State<ProfileScreen>
           IconButton(
             icon: Icon(Icons.notifications),
             onPressed: () {
-              // Handle notification action here
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => NotificationScreen()),
+              );
             },
           ),
         ],

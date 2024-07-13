@@ -504,11 +504,37 @@ class JobPostScreen extends StatelessWidget {
     }
   }
 
+  Future<void> _sendNotification(String clientId, Map<String, dynamic> user,
+      Map<String, dynamic> project) async {
+    try {
+      final notificationRef =
+          FirebaseFirestore.instance.collection('notifications');
+
+      // Check if the collection exists
+      final docExists = await notificationRef.doc('dummyDoc').get();
+      if (!docExists.exists) {
+        // Create the collection by setting a dummy document
+        await notificationRef.doc('dummyDoc').set({});
+      }
+
+      // Now add the notification document
+      await notificationRef.add({
+        'client_uid': clientId,
+        'user': user,
+        'project': project,
+      });
+
+      print('Notification sent successfully:');
+      print('Client ID: $clientId');
+      print('User data: $user');
+      print('Project data: $project');
+    } catch (e) {
+      print('Error sending notification: $e');
+    }
+  }
+
   Future<void> _applyForProject() async {
     final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-    final CollectionReference _appliedProjectsCollection =
-        _firestore.collection('applied_projects'); // Corrected collection name
-
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       final String uid = user.uid;
@@ -519,23 +545,22 @@ class JobPostScreen extends StatelessWidget {
         final String firstName = userData['firstName'];
         final String email = userData['email'];
 
-        final Map<String, dynamic> applicationData = {
+        final Map<String, dynamic> userDataMap = {
           'first_name': firstName,
           'email': email,
-          'username': project['uploader_name'],
-          'client_email': project['client_email'],
-          'project_name': project['project_name'],
-          'project_description': project['description'],
-          'project_tags': project['tags'],
-          'project_timestamp': project['timestamp'],
-          'project_status': project['status'],
         };
 
+        print('user data : $firstName $email');
+
+        final clientId = project['client_email'];
+
+        print('client email : $clientId');
+
         try {
-          await _appliedProjectsCollection.add(applicationData);
-          print('Application data added to applied_projects collection');
+          await _sendNotification(clientId, userDataMap, project);
+          print('Notification sent successfully.');
         } catch (e) {
-          print('Error adding application data: $e');
+          print('Error sending notification: $e');
         }
       } else {
         print('User data not found');
@@ -722,9 +747,8 @@ class JobPostScreen extends StatelessWidget {
                         'Application for Project: ${project['project_name'] ?? ''}';
                     final String body =
                         'I would love to work with you on this project.';
-
-                    await _applyForProject();
                     _sendWorkViaGmail(email, subject, body);
+                    await _applyForProject();
                   },
                   child: Text('Apply'),
                   style: ElevatedButton.styleFrom(
