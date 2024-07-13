@@ -489,10 +489,8 @@ class JobPostScreen extends StatelessWidget {
     final Uri emailUri = Uri(
       scheme: 'mailto',
       path: email,
-      queryParameters: {
-        'subject': subject,
-        'body': body,
-      },
+      query:
+          'subject=${Uri.encodeComponent(subject)}&body=${Uri.encodeComponent(body)}',
     );
 
     try {
@@ -719,7 +717,7 @@ class JobPostScreen extends StatelessWidget {
               Center(
                 child: ElevatedButton(
                   onPressed: () async {
-                    final String email = project['email'] ?? '';
+                    final String email = project['client_email'] ?? '';
                     final String subject =
                         'Application for Project: ${project['project_name'] ?? ''}';
                     final String body =

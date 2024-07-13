@@ -246,7 +246,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                       ),
                     ),
               trailing: IconButton(
-                icon: Icon(Icons.edit),
+                icon: Icon(Icons.upload_file),
                 onPressed: _editResume,
               ),
             ),
@@ -391,30 +391,39 @@ class _ProfileScreenState extends State<ProfileScreen>
   }
 
   void _editResume() async {
+    // Request storage permission
     PermissionStatus status = await Permission.storage.request();
     if (status.isGranted) {
+      // Pick a file
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['pdf'],
       );
 
+      // Check if a file was picked
       if (result != null && result.files.isNotEmpty) {
         File file = File(result.files.single.path!);
         String fileName = '${_user?.uid}_resume.pdf';
 
         try {
+          // Reference to Firebase Storage
           final Reference storageReference =
               FirebaseStorage.instance.ref().child('resumes').child(fileName);
           UploadTask uploadTask = storageReference.putFile(file);
 
+          // Wait for upload to complete
           await uploadTask.whenComplete(() => null);
+
+          // Get the download URL
           String downloadUrl = await storageReference.getDownloadURL();
 
+          // Update Firestore with the new resume link
           await FirebaseFirestore.instance
               .collection('users')
               .doc(_user?.uid)
               .update({'resume': downloadUrl});
 
+          // Update the state
           setState(() {
             _resumeLink = downloadUrl;
           });
@@ -423,16 +432,20 @@ class _ProfileScreenState extends State<ProfileScreen>
             SnackBar(content: Text('Resume updated successfully.')),
           );
         } catch (e) {
+          // Handle upload error
+          print('Failed to upload resume: $e');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Failed to upload resume: $e')),
           );
         }
       } else {
+        // No file selected
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('No file selected.')),
         );
       }
     } else {
+      // Storage permission denied
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Storage permission denied.')),
       );

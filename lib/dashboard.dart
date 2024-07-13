@@ -308,10 +308,12 @@ class ProjectDetailsScreen extends StatelessWidget {
     final Uri emailUri = Uri(
       scheme: 'mailto',
       path: email,
-      queryParameters: {
+      query:
+          'subject=${Uri.encodeComponent(subject)}&body=${Uri.encodeComponent(body)}',
+      /*queryParameters: {
         'subject': subject,
         'body': body,
-      },
+      },*/
     );
 
     try {
