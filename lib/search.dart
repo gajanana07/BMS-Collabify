@@ -479,10 +479,54 @@ class _FilterScreenState extends State<FilterScreen> {
   }
 }
 
-class JobPostScreen extends StatelessWidget {
+class JobPostScreen extends StatefulWidget {
   final Map<String, dynamic> project;
 
   const JobPostScreen({Key? key, required this.project}) : super(key: key);
+
+  @override
+  _JobPostScreenState createState() => _JobPostScreenState();
+}
+
+class _JobPostScreenState extends State<JobPostScreen> {
+  bool _hasApplied = false;
+  bool _isUploader = false;
+  List<String> _appliedProjectIds = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _checkApplicationStatus();
+  }
+
+  Future<void> _checkApplicationStatus() async {
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    final User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      // Check if the user is the uploader
+      if (widget.project['client_email'] == user.email) {
+        setState(() {
+          _isUploader = true;
+        });
+        return;
+      }
+
+      // Check if the user has already applied for this specific project
+      final QuerySnapshot applications = await _firestore
+          .collection('applications')
+          .where('project_id', isEqualTo: widget.project['project_id'])
+          .where('user_id', isEqualTo: user.uid)
+          .get();
+
+      if (applications.docs.isNotEmpty) {
+        setState(() {
+          _hasApplied = true;
+          _appliedProjectIds.add(widget.project['project_id']);
+        });
+      }
+    }
+  }
 
   Future<void> _sendWorkViaGmail(
       String email, String subject, String body) async {
@@ -552,13 +596,27 @@ class JobPostScreen extends StatelessWidget {
 
         print('user data : $firstName $email');
 
-        final clientId = project['client_email'];
+        final clientId = widget.project['client_email'];
 
         print('client email : $clientId');
 
         try {
-          await _sendNotification(clientId, userDataMap, project);
+          await _sendNotification(clientId, userDataMap, widget.project);
           print('Notification sent successfully.');
+
+          // Store the application in Firestore
+          await _firestore.collection('applications').add({
+            'project_id': widget.project['project_id'],
+            'user_id': uid,
+          });
+
+          setState(() {
+            _hasApplied = true;
+            _appliedProjectIds.add(widget.project['project_id']);
+          });
+
+          // Update application status
+          await _checkApplicationStatus();
         } catch (e) {
           print('Error sending notification: $e');
         }
@@ -572,35 +630,9 @@ class JobPostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('Project data in JobPostScreen: $project');
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(project['project_name'] ?? 'No title'),
-        /*actions: [
-          ElevatedButton(
-            onPressed: () async {
-              final String email = project['client_email'] ?? '';
-              final String subject =
-                  'Application for Project: ${project['project_name'] ?? ''}';
-              final String body =
-                  'I would love to work with you on this project.';
-
-              await _applyForProject();
-              _sendWorkViaGmail(email, subject, body);
-            },
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              backgroundColor: const Color.fromRGBO(33, 150, 243, 1),
-              foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              minimumSize: Size(80, 35),
-            ),
-            child: Text('CONNECT', style: TextStyle(fontSize: 13)),
-          ),
-        ],*/
+        title: Text(widget.project['project_name'] ?? 'No title'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -617,7 +649,7 @@ class JobPostScreen extends StatelessWidget {
               ),
               SizedBox(height: 8.0),
               Text(
-                project['uploader_name'] ?? 'No username',
+                widget.project['uploader_name'] ?? 'No username',
                 style: TextStyle(
                   fontSize: 21.0,
                   fontWeight: FontWeight.w300,
@@ -640,7 +672,7 @@ class JobPostScreen extends StatelessWidget {
               ),
               SizedBox(height: 8.0),
               Text(
-                project['client_email'] ?? 'No description',
+                widget.project['client_email'] ?? 'No description',
                 style: TextStyle(
                   fontSize: 21.0,
                   fontWeight: FontWeight.w300,
@@ -663,7 +695,7 @@ class JobPostScreen extends StatelessWidget {
               ),
               SizedBox(height: 8.0),
               Text(
-                project['status'] ?? 'No status',
+                widget.project['status'] ?? 'No status',
                 style: TextStyle(
                   fontSize: 21.0,
                   fontWeight: FontWeight.w300,
@@ -686,7 +718,7 @@ class JobPostScreen extends StatelessWidget {
               ),
               SizedBox(height: 8.0),
               Text(
-                project['description'] ?? 'No description',
+                widget.project['description'] ?? 'No description',
                 style: TextStyle(fontSize: 16.0),
               ),
               SizedBox(height: 10.0),
@@ -707,7 +739,7 @@ class JobPostScreen extends StatelessWidget {
               SizedBox(height: 8.0),
               Wrap(
                 spacing: 10.0,
-                children: (project['tags'] ?? '')
+                children: (widget.project['tags'] ?? '')
                     .split(',')
                     .map<Widget>((tag) => Chip(
                           label: Text(tag.trim()),
@@ -725,7 +757,7 @@ class JobPostScreen extends StatelessWidget {
                 endIndent: 15,
               ),
               Text(
-                'Posted On: ${project['timestamp'] ?? 'No date'}',
+                'Posted On: ${widget.project['timestamp'] ?? 'No date'}',
                 style: TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.bold,
@@ -741,20 +773,19 @@ class JobPostScreen extends StatelessWidget {
               ),
               Center(
                 child: ElevatedButton(
-                  onPressed: () async {
-                    final String email = project['client_email'] ?? '';
-                    final String subject =
-                        'Application for Project: ${project['project_name'] ?? ''}';
-                    final String body =
-                        'I would love to work with you on this project.';
-                    _sendWorkViaGmail(email, subject, body);
-                    await _applyForProject();
-                  },
-                  child: Text('Apply'),
-                  style: ElevatedButton.styleFrom(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
-                  ),
+                  onPressed: _appliedProjectIds
+                              .contains(widget.project['project_id']) ||
+                          _isUploader
+                      ? null
+                      : () async {
+                          await _applyForProject();
+                        },
+                  child: Text(
+                      _appliedProjectIds.contains(widget.project['project_id'])
+                          ? 'Already Applied'
+                          : _isUploader
+                              ? 'You are the uploader'
+                              : 'Apply for Job'),
                 ),
               ),
             ],
