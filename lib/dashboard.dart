@@ -61,6 +61,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 data['project_timestamp'], // Directly store the Timestamp
             'client_email': data['client_email'] ?? 'No client email',
             'client_id': data['client_id'] ?? '',
+            'status': data['status'] ?? 'No status',
           };
         }).toList();
 
@@ -297,7 +298,10 @@ class ProjectCard extends StatelessWidget {
 class ProjectDetailsScreen extends StatelessWidget {
   final Map<String, dynamic> project;
 
-  ProjectDetailsScreen({required this.project});
+  ProjectDetailsScreen({required this.project}) {
+    // Print the project details to verify the data
+    print('Project details: $project');
+  }
 
   Future<void> _sendWorkViaGmail(
       String email, String subject, String body) async {
@@ -334,24 +338,38 @@ class ProjectDetailsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
+                'Project Name',
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8.0),
+              Text(project['project_name'] ?? 'No title'),
+              SizedBox(height: 16.0),
+              Text(
+                'Client Email',
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8.0),
+              Text(project['client_email'] ?? 'No client email'),
+              SizedBox(height: 16.0),
+              Text(
+                'Status',
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8.0),
+              Text(project['status'] ?? 'No status'),
+              SizedBox(height: 16.0),
+              Text(
                 'Description',
                 style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 16.0),
+              SizedBox(height: 8.0),
               Text(project['description'] ?? 'No description'),
-              SizedBox(height: 16.0),
-              Text(
-                'Skills Required',
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 16.0),
-              Text(project['tags'] ?? 'No tags'),
               SizedBox(height: 16.0),
               Text(
                 'Posted On',
                 style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 16.0),
+              SizedBox(height: 8.0),
               Text(project['timestamp'] ?? 'No date'),
               SizedBox(height: 32.0),
               Center(
