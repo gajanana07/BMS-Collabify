@@ -74,19 +74,32 @@ class _NotificationScreenState extends State<NotificationScreen> {
               print('user $user , project : $project');
               return ListTile(
                 title: Text(
-                    '${user['first_name']} wants to work on ${project['project_name']}'),
+                  '${user['first_name']} wants to work on ${project['project_name']}',
+                  style: TextStyle(
+                    fontSize: 21.0,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
                 subtitle: Row(
                   children: [
-                    ElevatedButton(
-                      onPressed: () =>
-                          _handleNotification(notification.id, true),
-                      child: Text('Accept'),
+                    Container(
+                      margin:
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                      child: ElevatedButton(
+                        onPressed: () =>
+                            _handleNotification(notification.id, true),
+                        child: Text('Accept'),
+                      ),
                     ),
                     SizedBox(width: 8),
-                    ElevatedButton(
-                      onPressed: () =>
-                          _handleNotification(notification.id, false),
-                      child: Text('Reject'),
+                    Container(
+                      margin:
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                      child: ElevatedButton(
+                        onPressed: () =>
+                            _handleNotification(notification.id, false),
+                        child: Text('reject'),
+                      ),
                     ),
                   ],
                 ),
