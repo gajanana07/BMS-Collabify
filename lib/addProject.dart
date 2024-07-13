@@ -4,6 +4,7 @@ import 'package:classico/profile1.dart';
 import 'package:classico/search.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() {
   runApp(MyApp());
@@ -91,6 +92,31 @@ class AddProjectState extends State<AddProjectPage> {
     }
 
     try {
+      // Get current user
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('No user signed in')),
+        );
+        return;
+      }
+
+      // Fetch user details from Firestore
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      if (!userDoc.exists) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('User details not found')),
+        );
+        return;
+      }
+
+      String username = userDoc['username'];
+      String imageUrl = userDoc['imageUrl'];
+
       await FirebaseFirestore.instance.collection('projects').add({
         'project_name': projectName,
         'description': description,
@@ -99,7 +125,10 @@ class AddProjectState extends State<AddProjectPage> {
         'completed': _isCompleted,
         'status': _projectStatus,
         'timestamp': FieldValue.serverTimestamp(),
+        'username': username,
+        'imageUrl': imageUrl,
       });
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Project uploaded successfully')),
       );

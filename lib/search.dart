@@ -67,8 +67,10 @@ class _SearchScreenState extends State<SearchScreen> {
           'tags': data['tags'] ?? 'No tags',
           'timestamp': (data['timestamp'] as Timestamp?)?.toDate().toString() ??
               'No date',
-          'email': data['email'] ?? 'No email',
-          'uploader_name': data['uploader_name'] ?? 'Unknown',
+          'client_email': data['client_email'] ?? 'No email',
+          'uploader_name': data['username'] ?? 'Unknown',
+          'imageUrl': data['imageUrl'] ?? 'No image URL',
+          'status': data['status'] ?? 'no status',
         };
       }).toList();
 
@@ -296,8 +298,13 @@ class ProjectCard extends StatelessWidget {
               Row(
                 children: [
                   CircleAvatar(
+                    backgroundImage: project['imageUrl'] != 'No image URL'
+                        ? NetworkImage(project['imageUrl'])
+                        : null,
                     backgroundColor: Colors.grey,
-                    child: Icon(Icons.person, color: Colors.white),
+                    child: project['imageUrl'] == 'No image URL'
+                        ? Icon(Icons.person, color: Colors.white)
+                        : null,
                   ),
                   SizedBox(width: 10),
                   Column(
@@ -499,35 +506,10 @@ class JobPostScreen extends StatelessWidget {
     }
   }
 
-  void _launchGmail(
-      {required String toEmail,
-      required String subject,
-      required String body}) async {
-    final Uri gmailUri = Uri(
-      scheme: 'https',
-      path: 'mail.google.com/mail/u/0/',
-      queryParameters: {
-        'view': 'cm',
-        'fs': '1',
-        'to': toEmail,
-        'su': subject,
-        'body': body,
-      },
-    );
-
-    // ignore: deprecated_member_use
-    if (await canLaunch(gmailUri.toString())) {
-      // ignore: deprecated_member_use
-      await launch(gmailUri.toString());
-    } else {
-      throw 'Could not launch $gmailUri';
-    }
-  }
-
   Future<void> _applyForProject() async {
     final FirebaseFirestore _firestore = FirebaseFirestore.instance;
     final CollectionReference _appliedProjectsCollection =
-        _firestore.collection('applied_projects');
+        _firestore.collection('applied_projects'); // Corrected collection name
 
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -542,6 +524,8 @@ class JobPostScreen extends StatelessWidget {
         final Map<String, dynamic> applicationData = {
           'first_name': firstName,
           'email': email,
+          'username': project['uploader_name'],
+          'client_email': project['client_email'],
           'project_name': project['project_name'],
           'project_description': project['description'],
           'project_tags': project['tags'],
@@ -565,13 +549,15 @@ class JobPostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('Project data in JobPostScreen: $project');
+
     return Scaffold(
       appBar: AppBar(
         title: Text(project['project_name'] ?? 'No title'),
-        actions: [
+        /*actions: [
           ElevatedButton(
             onPressed: () async {
-              final String email = project['email'] ?? '';
+              final String email = project['client_email'] ?? '';
               final String subject =
                   'Application for Project: ${project['project_name'] ?? ''}';
               final String body =
@@ -586,102 +572,171 @@ class JobPostScreen extends StatelessWidget {
               ),
               backgroundColor: const Color.fromRGBO(33, 150, 243, 1),
               foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(
-                  horizontal: 16.0, vertical: 8.0), // Adjust padding as needed
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               minimumSize: Size(80, 35),
             ),
             child: Text('CONNECT', style: TextStyle(fontSize: 13)),
           ),
-        ],
+        ],*/
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Client: ${project['name'] ?? 'Unknown'}',
-              style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 8.0),
-            Text(
-              'Client Email: ${project['email'] ?? 'No email'}',
-              style: TextStyle(
-                fontSize: 16.0,
-              ),
-            ),
-            SizedBox(height: 8.0),
-            Text(
-              'Status: ${project['status'] ?? 'No status'}',
-              style: TextStyle(
-                fontSize: 16.0,
-              ),
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              'Description',
-              style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 8.0),
-            Text(
-              project['description'] ?? 'No description',
-              style: TextStyle(fontSize: 16.0),
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              'Skills Required',
-              style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 8.0),
-            Wrap(
-              spacing: 8.0,
-              children: (project['tags'] ?? '')
-                  .split(',')
-                  .map<Widget>((tag) => Chip(
-                        label: Text(tag.trim()),
-                        shape: StadiumBorder(),
-                        backgroundColor: Colors.blue.shade100,
-                      ))
-                  .toList(),
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              'Posted On: ${project['timestamp'] ?? 'No date'}',
-              style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 32.0),
-            Center(
-              child: ElevatedButton(
-                onPressed: () async {
-                  final String email = project['email'] ?? '';
-                  final String subject =
-                      'Application for Project: ${project['project_name'] ?? ''}';
-                  final String body =
-                      'I would love to work with you on this project.';
-
-                  await _applyForProject();
-                  _sendWorkViaGmail(email, subject, body);
-                },
-                child: Text('Apply'),
-                style: ElevatedButton.styleFrom(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Client',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-          ],
+              SizedBox(height: 8.0),
+              Text(
+                project['uploader_name'] ?? 'No username',
+                style: TextStyle(
+                  fontSize: 21.0,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+              SizedBox(height: 8.0),
+              Divider(
+                color: Colors.grey,
+                thickness: 1,
+                height: 15,
+                indent: 15,
+                endIndent: 15,
+              ),
+              Text(
+                'Client email',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 8.0),
+              Text(
+                project['client_email'] ?? 'No description',
+                style: TextStyle(
+                  fontSize: 21.0,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+              SizedBox(height: 8.0),
+              Divider(
+                color: Colors.grey,
+                thickness: 1,
+                height: 15,
+                indent: 15,
+                endIndent: 15,
+              ),
+              Text(
+                'Status',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 8.0),
+              Text(
+                project['status'] ?? 'No status',
+                style: TextStyle(
+                  fontSize: 21.0,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+              SizedBox(height: 16.0),
+              Divider(
+                color: Colors.grey,
+                thickness: 1,
+                height: 15,
+                indent: 15,
+                endIndent: 15,
+              ),
+              Text(
+                'Description',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 8.0),
+              Text(
+                project['description'] ?? 'No description',
+                style: TextStyle(fontSize: 16.0),
+              ),
+              SizedBox(height: 10.0),
+              Divider(
+                color: Colors.grey,
+                thickness: 1,
+                height: 15,
+                indent: 15,
+                endIndent: 15,
+              ),
+              Text(
+                'Skills Required',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 8.0),
+              Wrap(
+                spacing: 10.0,
+                children: (project['tags'] ?? '')
+                    .split(',')
+                    .map<Widget>((tag) => Chip(
+                          label: Text(tag.trim()),
+                          shape: StadiumBorder(),
+                          backgroundColor: Colors.blue.shade100,
+                        ))
+                    .toList(),
+              ),
+              SizedBox(height: 16.0),
+              Divider(
+                color: Colors.grey,
+                thickness: 1,
+                height: 15,
+                indent: 15,
+                endIndent: 15,
+              ),
+              Text(
+                'Posted On: ${project['timestamp'] ?? 'No date'}',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 32.0),
+              Divider(
+                color: Colors.grey,
+                thickness: 1,
+                height: 15,
+                indent: 15,
+                endIndent: 15,
+              ),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    final String email = project['email'] ?? '';
+                    final String subject =
+                        'Application for Project: ${project['project_name'] ?? ''}';
+                    final String body =
+                        'I would love to work with you on this project.';
+
+                    await _applyForProject();
+                    _sendWorkViaGmail(email, subject, body);
+                  },
+                  child: Text('Apply'),
+                  style: ElevatedButton.styleFrom(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -61,7 +61,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 data['project_timestamp'], // Directly store the Timestamp
             'client_email': data['client_email'] ?? 'No client email',
             'client_id': data['client_id'] ?? '',
-            'status': data['status'] ?? 'No status',
+            'project_status': data['project_status'] ?? 'No status',
           };
         }).toList();
 
@@ -342,21 +342,39 @@ class ProjectDetailsScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8.0),
-              Text(project['project_name'] ?? 'No title'),
+              Text(
+                project['project_name'] ?? 'No title',
+                style: TextStyle(
+                  fontSize: 21.0,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
               SizedBox(height: 16.0),
               Text(
                 'Client Email',
                 style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8.0),
-              Text(project['client_email'] ?? 'No client email'),
+              Text(
+                project['client_email'] ?? 'No client email',
+                style: TextStyle(
+                  fontSize: 21.0,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
               SizedBox(height: 16.0),
               Text(
                 'Status',
                 style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8.0),
-              Text(project['status'] ?? 'No status'),
+              Text(
+                project['project_status'] ?? 'No status',
+                style: TextStyle(
+                  fontSize: 21.0,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
               SizedBox(height: 16.0),
               Text(
                 'Description',
@@ -364,7 +382,7 @@ class ProjectDetailsScreen extends StatelessWidget {
               ),
               SizedBox(height: 8.0),
               Text(project['description'] ?? 'No description'),
-              SizedBox(height: 16.0),
+              SizedBox(height: 8.0),
               Text(
                 'Posted On',
                 style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
