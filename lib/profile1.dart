@@ -1,20 +1,17 @@
 import 'dart:io';
-import 'dart:convert';
 
 import 'package:classico/addProject.dart';
 import 'package:classico/dashboard.dart';
-import 'package:classico/login.dart';
+
 import 'package:classico/message1.dart';
-import 'package:classico/profile1.dart';
-
 import 'package:classico/search.dart';
-
 import 'package:classico/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'user_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -41,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     with SingleTickerProviderStateMixin {
   final UserService _userService = UserService();
   User? _user;
-  Future<Map<String, dynamic>>? _userDataFuture;
+  Future<DocumentSnapshot<Map<String, dynamic>>>? _userDataFuture;
   int _selectedIndex = 4;
   String _selectedOption = 'Applied Projects';
   late TabController _tabController;
@@ -65,25 +62,27 @@ class _ProfileScreenState extends State<ProfileScreen>
   void _fetchUserData() async {
     _user = FirebaseAuth.instance.currentUser;
     if (_user != null) {
-      _userDataFuture = _userService.getUser(_user!.uid);
-      final DocumentSnapshot snapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(_user?.uid)
-          .get();
+      _userDataFuture =
+          FirebaseFirestore.instance.collection('users').doc(_user!.uid).get();
 
-      final data = snapshot.data() as Map<String, dynamic>;
-      print('Fetched user data: $data');
-      setState(() {
-        _profileImageUrl = data['imageUrl'] ?? '';
-        _userName = '${data['firstName']} ${data['lastName']}';
-        _usn = data['usn'] ?? '';
-        _email = data['email'] ?? '';
-        _bio = data['bio'] ?? '';
-        _skills = data['skills'] ?? '';
-        _areaOfInterest = (data['interests'] as List<dynamic>).join(', ') ?? '';
-
-        _githubLink = data['github'] ?? '';
-        _resumeLink = data['resume'] ?? '';
+      _userDataFuture!.then((snapshot) {
+        if (snapshot.exists) {
+          var data = snapshot.data()!;
+          setState(() {
+            _profileImageUrl = data['imageUrl'] ?? '';
+            _userName = '${data['firstName']} ${data['lastName']}';
+            _usn = data['usn'] ?? '';
+            _email = data['email'] ?? '';
+            _bio = data['bio'] ?? '';
+            _skills = data['skills'] ?? '';
+            _areaOfInterest =
+                (data['interests'] as List<dynamic>).join(', ') ?? '';
+            _githubLink = data['github'] ?? '';
+            _resumeLink = data['resume'] ?? '';
+          });
+        }
+      }).catchError((error) {
+        print('Error fetching user data: $error');
       });
     }
   }
@@ -95,25 +94,25 @@ class _ProfileScreenState extends State<ProfileScreen>
 
     switch (index) {
       case 0:
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => DashboardScreen()),
         );
         break;
       case 1:
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => SearchScreen()),
         );
         break;
       case 2:
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => AddProjectPage()),
         );
         break;
       case 3:
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
               builder: (context) => FeedScreen(
@@ -178,9 +177,13 @@ class _ProfileScreenState extends State<ProfileScreen>
           Card(
             child: ListTile(
               leading: Icon(Icons.interests, color: Colors.blue),
-              title: Text('Area of Interest',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.blue)),
+              title: Text(
+                'Area of Interest',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
+              ),
               subtitle: StreamBuilder<DocumentSnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('users')
@@ -190,10 +193,11 @@ class _ProfileScreenState extends State<ProfileScreen>
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Text('Loading...');
                   }
-                  var data = snapshot.data?.data() as Map<String, dynamic>?;
-                  var interests = data?['interests'];
+                  var data =
+                      snapshot.data?.data() as Map<String, dynamic>? ?? {};
+                  var interests = data['interests'];
                   return interests != null && interests is List
-                      ? Text((interests as List).join(', '))
+                      ? Text(interests.join(', '))
                       : Text('Not provided');
                 },
               ),
@@ -202,9 +206,13 @@ class _ProfileScreenState extends State<ProfileScreen>
           Card(
             child: ListTile(
               leading: Icon(Icons.code, color: Colors.blue),
-              title: Text('GitHub',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.blue)),
+              title: Text(
+                'GitHub',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
+              ),
               subtitle:
                   Text(_githubLink.isEmpty ? 'Not provided' : _githubLink),
             ),
@@ -212,9 +220,13 @@ class _ProfileScreenState extends State<ProfileScreen>
           Card(
             child: ListTile(
               leading: Icon(Icons.picture_as_pdf, color: Colors.blue),
-              title: Text('Resume',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.blue)),
+              title: Text(
+                'Resume',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
+              ),
               subtitle: _resumeLink.isEmpty
                   ? Text('Not provided')
                   : InkWell(
@@ -252,8 +264,13 @@ class _ProfileScreenState extends State<ProfileScreen>
     return Card(
       child: ListTile(
         leading: Icon(Icons.edit, color: Colors.blue),
-        title: Text(title,
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.blue,
+          ),
+        ),
         subtitle: Text(content.isEmpty ? 'Not provided' : content),
         trailing: IconButton(
           icon: Icon(Icons.edit),
@@ -303,12 +320,19 @@ class _ProfileScreenState extends State<ProfileScreen>
                     .update({
                   'bio': bioController.text,
                   'github': githubController.text,
+                }).then((value) {
+                  setState(() {
+                    _bio = bioController.text;
+                    _githubLink = githubController.text;
+                  });
+                  Navigator.of(context).pop();
+                }).catchError((error) {
+                  print('Failed to update bio: $error');
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to update bio')),
+                  );
                 });
-                setState(() {
-                  _bio = bioController.text;
-                  _githubLink = githubController.text;
-                });
-                Navigator.of(context).pop();
               },
               child: Text('Save'),
             ),
@@ -345,11 +369,18 @@ class _ProfileScreenState extends State<ProfileScreen>
                     .doc(_user?.uid)
                     .update({
                   'skills': skillsController.text,
+                }).then((value) {
+                  setState(() {
+                    _skills = skillsController.text;
+                  });
+                  Navigator.of(context).pop();
+                }).catchError((error) {
+                  print('Failed to update skills: $error');
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to update skills')),
+                  );
                 });
-                setState(() {
-                  _skills = skillsController.text;
-                });
-                Navigator.of(context).pop();
               },
               child: Text('Save'),
             ),
@@ -360,34 +391,51 @@ class _ProfileScreenState extends State<ProfileScreen>
   }
 
   void _editResume() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf'],
-    );
+    PermissionStatus status = await Permission.storage.request();
+    if (status.isGranted) {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+      );
 
-    if (result != null) {
-      PlatformFile file = result.files.first;
+      if (result != null && result.files.isNotEmpty) {
+        File file = File(result.files.single.path!);
+        String fileName = '${_user?.uid}_resume.pdf';
 
-      // Upload file to Firebase Storage
-      Reference storageRef = FirebaseStorage.instance
-          .ref()
-          .child('resumes')
-          .child('${_user?.uid}.pdf');
-      UploadTask uploadTask = storageRef.putFile(File(file.path!));
-      TaskSnapshot taskSnapshot = await uploadTask;
+        try {
+          final Reference storageReference =
+              FirebaseStorage.instance.ref().child('resumes').child(fileName);
+          UploadTask uploadTask = storageReference.putFile(file);
 
-      // Get file URL
-      String resumeUrl = await taskSnapshot.ref.getDownloadURL();
+          await uploadTask.whenComplete(() => null);
+          String downloadUrl = await storageReference.getDownloadURL();
 
-      // Update user document
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(_user?.uid)
-          .update({'resume': resumeUrl});
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(_user?.uid)
+              .update({'resume': downloadUrl});
 
-      setState(() {
-        _resumeLink = resumeUrl;
-      });
+          setState(() {
+            _resumeLink = downloadUrl;
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Resume updated successfully.')),
+          );
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to upload resume: $e')),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('No file selected.')),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Storage permission denied.')),
+      );
     }
   }
 
@@ -414,12 +462,15 @@ class _ProfileScreenState extends State<ProfileScreen>
         ),
         Expanded(
           child: StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection(_selectedOption == 'Applied Projects'
-                    ? 'applied_projects'
-                    : 'projects')
-                .where('email', isEqualTo: _user?.email)
-                .snapshots(),
+            stream: _selectedOption == 'Applied Projects'
+                ? FirebaseFirestore.instance
+                    .collection('applied_projects')
+                    .where('email', isEqualTo: _user?.email)
+                    .snapshots()
+                : FirebaseFirestore.instance
+                    .collection('projects')
+                    .where('client_email', isEqualTo: _user?.email)
+                    .snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Center(child: CircularProgressIndicator());
@@ -436,7 +487,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                   print('Building ListTile for: $data');
                   return ListTile(
                     title: Text(data['project_name'] ?? 'No Project Name'),
-                    subtitle: Text(data['project_tags'] ?? 'No Description'),
+                    subtitle: _selectedOption == 'Applied Projects'
+                        ? Text(data['project_tags'] ?? 'No Description')
+                        : Text(data['tags'] ?? 'No Description'),
                   );
                 },
               );
@@ -466,12 +519,12 @@ class _ProfileScreenState extends State<ProfileScreen>
         ],
       ),
       body: _userDataFuture != null
-          ? FutureBuilder<Map<String, dynamic>>(
+          ? FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
               future: _userDataFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasData) {
-                    Map<String, dynamic> userData = snapshot.data!;
+                  if (snapshot.hasData && snapshot.data!.exists) {
+                    var userData = snapshot.data!.data()!;
                     return Column(
                       children: <Widget>[
                         Container(
