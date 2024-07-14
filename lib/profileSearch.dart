@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ProfileSearchScreen extends StatefulWidget {
-  const ProfileSearchScreen({Key? key}) : super(key: key);
+  const ProfileSearchScreen({super.key});
 
   @override
   State<ProfileSearchScreen> createState() => _ProfileSearchState();
@@ -35,7 +35,7 @@ class _ProfileSearchState extends State<ProfileSearchScreen> {
       appBar: AppBar(
         title: TextField(
           controller: _profileSearchController,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             border: InputBorder.none,
           ),
           onChanged: (query) {
@@ -93,7 +93,7 @@ class _ProfileSearchState extends State<ProfileSearchScreen> {
                       leading: CircleAvatar(
                         backgroundImage:
                             imageUrl != null ? NetworkImage(imageUrl) : null,
-                        child: imageUrl == null ? Icon(Icons.person) : null,
+                        child: imageUrl == null ? const Icon(Icons.person) : null,
                       ),
                       title: Text(name),
                       subtitle: Text(email),

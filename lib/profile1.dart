@@ -11,25 +11,27 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'user_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 void main() {
-  runApp(ProfileApp());
+  runApp(const ProfileApp());
 }
 
 class ProfileApp extends StatelessWidget {
+  const ProfileApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: ProfileScreen(),
     );
   }
 }
 
 class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
+
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
@@ -97,19 +99,19 @@ class _ProfileScreenState extends State<ProfileScreen>
       case 0:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => DashboardScreen()),
+          MaterialPageRoute(builder: (context) => const DashboardScreen()),
         );
         break;
       case 1:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => SearchScreen()),
+          MaterialPageRoute(builder: (context) => const SearchScreen()),
         );
         break;
       case 2:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => AddProjectPage()),
+          MaterialPageRoute(builder: (context) => const AddProjectPage()),
         );
         break;
       case 3:
@@ -133,25 +135,25 @@ class _ProfileScreenState extends State<ProfileScreen>
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Log Out'),
-          content: Text('Are you sure you want to log out?'),
+          title: const Text('Log Out'),
+          content: const Text('Are you sure you want to log out?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () async {
                 await FirebaseAuth.instance.signOut();
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => SignUpScreen()),
+                  MaterialPageRoute(builder: (context) => const SignUpScreen()),
                   (Route<dynamic> route) => false,
                 );
               },
-              child: Text('Ok'),
+              child: const Text('Ok'),
             ),
           ],
         );
@@ -161,7 +163,7 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   Widget _buildAboutSection() {
     return SingleChildScrollView(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -177,8 +179,8 @@ class _ProfileScreenState extends State<ProfileScreen>
           ),
           Card(
             child: ListTile(
-              leading: Icon(Icons.interests, color: Colors.blue),
-              title: Text(
+              leading: const Icon(Icons.interests, color: Colors.blue),
+              title: const Text(
                 'Area of Interest',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -192,22 +194,22 @@ class _ProfileScreenState extends State<ProfileScreen>
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Text('Loading...');
+                    return const Text('Loading...');
                   }
                   var data =
                       snapshot.data?.data() as Map<String, dynamic>? ?? {};
                   var interests = data['interests'];
                   return interests != null && interests is List
                       ? Text(interests.join(', '))
-                      : Text('Not provided');
+                      : const Text('Not provided');
                 },
               ),
             ),
           ),
           Card(
             child: ListTile(
-              leading: Icon(Icons.code, color: Colors.blue),
-              title: Text(
+              leading: const Icon(Icons.code, color: Colors.blue),
+              title: const Text(
                 'GitHub',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -220,8 +222,8 @@ class _ProfileScreenState extends State<ProfileScreen>
           ),
           Card(
             child: ListTile(
-              leading: Icon(Icons.link, color: Colors.blue),
-              title: Text(
+              leading: const Icon(Icons.link, color: Colors.blue),
+              title: const Text(
                 'LinkedIn',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -231,7 +233,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               subtitle:
                   Text(_linkedInLink.isEmpty ? 'Not provided' : _linkedInLink),
               trailing: IconButton(
-                icon: Icon(Icons.edit),
+                icon: const Icon(Icons.edit),
                 onPressed: _editLinkedIn,
               ),
             ),
@@ -248,17 +250,17 @@ class _ProfileScreenState extends State<ProfileScreen>
   }) {
     return Card(
       child: ListTile(
-        leading: Icon(Icons.edit, color: Colors.blue),
+        leading: const Icon(Icons.edit, color: Colors.blue),
         title: Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.blue,
           ),
         ),
         subtitle: Text(content.isEmpty ? 'Not provided' : content),
         trailing: IconButton(
-          icon: Icon(Icons.edit),
+          icon: const Icon(Icons.edit),
           onPressed: onEdit,
         ),
       ),
@@ -275,17 +277,17 @@ class _ProfileScreenState extends State<ProfileScreen>
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Edit Bio'),
+          title: const Text('Edit Bio'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
                 TextField(
                   controller: bioController,
-                  decoration: InputDecoration(labelText: 'Bio'),
+                  decoration: const InputDecoration(labelText: 'Bio'),
                 ),
                 TextField(
                   controller: githubController,
-                  decoration: InputDecoration(labelText: 'GitHub Link'),
+                  decoration: const InputDecoration(labelText: 'GitHub Link'),
                 ),
               ],
             ),
@@ -295,7 +297,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
@@ -315,11 +317,11 @@ class _ProfileScreenState extends State<ProfileScreen>
                   print('Failed to update bio: $error');
                   Navigator.of(context).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Failed to update bio')),
+                    const SnackBar(content: Text('Failed to update bio')),
                   );
                 });
               },
-              child: Text('Save'),
+              child: const Text('Save'),
             ),
           ],
         );
@@ -335,17 +337,17 @@ class _ProfileScreenState extends State<ProfileScreen>
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Edit Skills'),
+          title: const Text('Edit Skills'),
           content: TextField(
             controller: skillsController,
-            decoration: InputDecoration(labelText: 'Skills'),
+            decoration: const InputDecoration(labelText: 'Skills'),
           ),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
@@ -363,11 +365,11 @@ class _ProfileScreenState extends State<ProfileScreen>
                   print('Failed to update skills: $error');
                   Navigator.of(context).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Failed to update skills')),
+                    const SnackBar(content: Text('Failed to update skills')),
                   );
                 });
               },
-              child: Text('Save'),
+              child: const Text('Save'),
             ),
           ],
         );
@@ -396,12 +398,12 @@ class _ProfileScreenState extends State<ProfileScreen>
           _resumeLink = resumeUrl;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Resume uploaded successfully')),
+          const SnackBar(content: Text('Resume uploaded successfully')),
         );
       }).catchError((error) {
         print('Failed to upload resume: $error');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to upload resume')),
+          const SnackBar(content: Text('Failed to upload resume')),
         );
       });
     }
@@ -431,17 +433,17 @@ class _ProfileScreenState extends State<ProfileScreen>
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Edit LinkedIn Link'),
+          title: const Text('Edit LinkedIn Link'),
           content: TextField(
             controller: linkedInController,
-            decoration: InputDecoration(labelText: 'LinkedIn Link'),
+            decoration: const InputDecoration(labelText: 'LinkedIn Link'),
           ),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
@@ -459,11 +461,11 @@ class _ProfileScreenState extends State<ProfileScreen>
                   print('Failed to update LinkedIn link: $error');
                   Navigator.of(context).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Failed to update LinkedIn link')),
+                    const SnackBar(content: Text('Failed to update LinkedIn link')),
                   );
                 });
               },
-              child: Text('Save'),
+              child: const Text('Save'),
             ),
           ],
         );
@@ -475,7 +477,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: DropdownButton<String>(
             value: _selectedOption,
             onChanged: (String? newValue) {
@@ -505,7 +507,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                     .snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
               var documents = snapshot.data!.docs;
               print('Fetched documents: ${documents.length}');
@@ -534,14 +536,14 @@ class _ProfileScreenState extends State<ProfileScreen>
                             color: Colors.grey.withOpacity(0.5),
                             spreadRadius: 2,
                             blurRadius: 5,
-                            offset: Offset(0, 3),
+                            offset: const Offset(0, 3),
                           ),
                         ],
                       ),
                       child: ListTile(
                         title: Text(
                           data['project_name'] ?? 'No Project Name',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 18.0,
                             fontWeight: FontWeight.w500,
                           ),
@@ -565,18 +567,18 @@ class _ProfileScreenState extends State<ProfileScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
+        title: const Text('Profile'),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             onPressed: _showLogoutDialog,
           ),
           IconButton(
-            icon: Icon(Icons.notifications),
+            icon: const Icon(Icons.notifications),
             onPressed: () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => NotificationScreen()),
+                MaterialPageRoute(builder: (context) => const NotificationScreen()),
               );
             },
           ),
@@ -592,7 +594,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                     return Column(
                       children: <Widget>[
                         Container(
-                          padding: EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(16.0),
                           child: Row(
                             children: <Widget>[
                               CircleAvatar(
@@ -602,16 +604,16 @@ class _ProfileScreenState extends State<ProfileScreen>
                                         _profileImageUrl)
                                     : null,
                                 child: _profileImageUrl.isEmpty
-                                    ? Icon(Icons.account_circle, size: 100)
+                                    ? const Icon(Icons.account_circle, size: 100)
                                     : null,
                               ),
-                              SizedBox(width: 20),
+                              const SizedBox(width: 20),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
                                     _userName,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold),
                                   ),
@@ -624,7 +626,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                         ),
                         TabBar(
                           controller: _tabController,
-                          tabs: [
+                          tabs: const [
                             Tab(text: 'About'),
                             Tab(text: 'Projects'),
                           ],
@@ -643,14 +645,14 @@ class _ProfileScreenState extends State<ProfileScreen>
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else {
-                    return Center(child: Text('No data available'));
+                    return const Center(child: Text('No data available'));
                   }
                 } else {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
               },
             )
-          : Center(child: CircularProgressIndicator()),
+          : const Center(child: CircularProgressIndicator()),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
@@ -676,7 +678,7 @@ class _ProfileScreenState extends State<ProfileScreen>
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Color(0xFF009FFF),
+        selectedItemColor: const Color(0xFF009FFF),
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
       ),

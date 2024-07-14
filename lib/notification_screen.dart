@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class NotificationScreen extends StatefulWidget {
+  const NotificationScreen({super.key});
+
   @override
   _NotificationScreenState createState() => _NotificationScreenState();
 }
@@ -48,7 +50,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Notifications'),
+        title: const Text('Notifications'),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -58,7 +60,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           final notifications = snapshot.data!.docs;
@@ -75,7 +77,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               return ListTile(
                 title: Text(
                   '${user['first_name']} wants to work on ${project['project_name']}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 21.0,
                     fontWeight: FontWeight.w300,
                   ),
@@ -84,21 +86,21 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   children: [
                     Container(
                       margin:
-                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                          const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                       child: ElevatedButton(
                         onPressed: () =>
                             _handleNotification(notification.id, true),
-                        child: Text('Accept'),
+                        child: const Text('Accept'),
                       ),
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Container(
                       margin:
-                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                          const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                       child: ElevatedButton(
                         onPressed: () =>
                             _handleNotification(notification.id, false),
-                        child: Text('reject'),
+                        child: const Text('reject'),
                       ),
                     ),
                   ],

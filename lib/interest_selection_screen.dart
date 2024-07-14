@@ -6,7 +6,7 @@ class InterestSelectionScreen extends StatefulWidget {
   final String email;
   final String password;
 
-  InterestSelectionScreen({
+  const InterestSelectionScreen({super.key, 
     required this.username,
     required this.email,
     required this.password,
@@ -18,7 +18,7 @@ class InterestSelectionScreen extends StatefulWidget {
 }
 
 class _InterestSelectionScreenState extends State<InterestSelectionScreen> {
-  List<String> _interests = [
+  final List<String> _interests = [
     'Technology',
     'Data Science',
     'Machine Learning',
@@ -28,12 +28,12 @@ class _InterestSelectionScreenState extends State<InterestSelectionScreen> {
     'Game Development',
     'Cybersecurity'
   ];
-  List<String> _selectedInterests = [];
+  final List<String> _selectedInterests = [];
 
   void _navigateToCompleteProfile() {
     if (_selectedInterests.length < 3) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Please select at least 3 interests.'),
         ),
       );
@@ -57,7 +57,7 @@ class _InterestSelectionScreenState extends State<InterestSelectionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select Interests'),
+        title: const Text('Select Interests'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -88,9 +88,9 @@ class _InterestSelectionScreenState extends State<InterestSelectionScreen> {
               onPressed: _navigateToCompleteProfile,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),
-              child: Text(
+              child: const Text(
                 'Next',
                 style: TextStyle(
                   fontSize: 16.0,

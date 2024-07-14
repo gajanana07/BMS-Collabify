@@ -7,23 +7,26 @@ import 'package:flutter/material.dart';
 import 'package:classico/search.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: DashboardScreen(),
     );
   }
 }
 
 class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({super.key});
+
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
 }
@@ -119,7 +122,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 2:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => AddProjectPage()),
+          MaterialPageRoute(builder: (context) => const AddProjectPage()),
         );
         break;
       case 3:
@@ -135,7 +138,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 4:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ProfileScreen()),
+          MaterialPageRoute(builder: (context) => const ProfileScreen()),
         );
         break;
     }
@@ -182,7 +185,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
@@ -233,7 +236,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Color(0xFF009FFF),
+        selectedItemColor: const Color(0xFF009FFF),
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
       ),
@@ -244,7 +247,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 class ProjectCard extends StatelessWidget {
   final Map<String, dynamic> project;
 
-  ProjectCard({required this.project});
+  const ProjectCard({super.key, required this.project});
 
   String _getShortDescription(String description) {
     const int maxLength = 50;
@@ -266,7 +269,7 @@ class ProjectCard extends StatelessWidget {
     }
 
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -274,19 +277,19 @@ class ProjectCard extends StatelessWidget {
           children: [
             Text(
               project['project_name'],
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Text(_getShortDescription(project['description'])),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Text(
               project['tags'],
-              style: TextStyle(color: Colors.grey),
+              style: const TextStyle(color: Colors.grey),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Text(
               formattedDate,
-              style: TextStyle(color: Colors.grey),
+              style: const TextStyle(color: Colors.grey),
             ),
           ],
         ),
@@ -298,7 +301,7 @@ class ProjectCard extends StatelessWidget {
 class ProjectDetailsScreen extends StatelessWidget {
   final Map<String, dynamic> project;
 
-  ProjectDetailsScreen({required this.project}) {
+  ProjectDetailsScreen({super.key, required this.project}) {
     // Print the project details to verify the data
     print('Project details: $project');
   }
@@ -339,59 +342,59 @@ class ProjectDetailsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Project Name',
                 style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               Text(
                 project['project_name'] ?? 'No title',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 21.0,
                   fontWeight: FontWeight.w300,
                 ),
               ),
-              SizedBox(height: 16.0),
-              Text(
+              const SizedBox(height: 16.0),
+              const Text(
                 'Client Email',
                 style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               Text(
                 project['client_email'] ?? 'No client email',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 21.0,
                   fontWeight: FontWeight.w300,
                 ),
               ),
-              SizedBox(height: 16.0),
-              Text(
+              const SizedBox(height: 16.0),
+              const Text(
                 'Status',
                 style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               Text(
                 project['project_status'] ?? 'No status',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 21.0,
                   fontWeight: FontWeight.w300,
                 ),
               ),
-              SizedBox(height: 16.0),
-              Text(
+              const SizedBox(height: 16.0),
+              const Text(
                 'Description',
                 style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               Text(project['description'] ?? 'No description'),
-              SizedBox(height: 8.0),
-              Text(
+              const SizedBox(height: 8.0),
+              const Text(
                 'Posted On',
                 style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               Text(project['timestamp'] ?? 'No date'),
-              SizedBox(height: 32.0),
+              const SizedBox(height: 32.0),
               Center(
                 child: ElevatedButton(
                   onPressed: () async {
@@ -399,16 +402,16 @@ class ProjectDetailsScreen extends StatelessWidget {
                         ''; // Fetch client's email from project
                     final String subject =
                         'Application for Project: ${project['project_name'] ?? ''}';
-                    final String body =
+                    const String body =
                         'Here are the files which you have asked for';
 
                     await _sendWorkViaGmail(clientEmail, subject, body);
                   },
-                  child: Text('Send Your Work'),
                   style: ElevatedButton.styleFrom(
                     padding:
-                        EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+                        const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
                   ),
+                  child: const Text('Send Your Work'),
                 ),
               ),
             ],

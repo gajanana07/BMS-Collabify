@@ -5,14 +5,11 @@ import 'package:classico/profile1.dart';
 import 'package:classico/profileSearch.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'search.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+  const SearchScreen({super.key});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -139,7 +136,7 @@ class _SearchScreenState extends State<SearchScreen> {
       case 0:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => DashboardScreen()),
+          MaterialPageRoute(builder: (context) => const DashboardScreen()),
         );
         break;
       case 1:
@@ -148,7 +145,7 @@ class _SearchScreenState extends State<SearchScreen> {
       case 2:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => AddProjectPage()),
+          MaterialPageRoute(builder: (context) => const AddProjectPage()),
         );
         // Handle add action here
         break;
@@ -166,7 +163,7 @@ class _SearchScreenState extends State<SearchScreen> {
       case 4:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ProfileScreen()),
+          MaterialPageRoute(builder: (context) => const ProfileScreen()),
         );
         // Handle profile action here
         break;
@@ -195,7 +192,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        ProfileSearchScreen()), // profile search.
+                        const ProfileSearchScreen()), // profile search.
               );
             },
           ),
@@ -204,7 +201,7 @@ class _SearchScreenState extends State<SearchScreen> {
             onPressed: () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => ProfileScreen()),
+                MaterialPageRoute(builder: (context) => const ProfileScreen()),
               );
             },
           ),
@@ -266,7 +263,7 @@ class _SearchScreenState extends State<SearchScreen> {
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Color(0xFF009FFF), // selected item color
+        selectedItemColor: const Color(0xFF009FFF), // selected item color
         unselectedItemColor: Colors.grey, // unselected item color
         type: BottomNavigationBarType.fixed, // to show all items
       ),
@@ -278,7 +275,7 @@ class ProjectCard extends StatelessWidget {
   final Map<String, dynamic> project;
   final VoidCallback onTap;
 
-  const ProjectCard({required this.project, required this.onTap});
+  const ProjectCard({super.key, required this.project, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -303,21 +300,21 @@ class ProjectCard extends StatelessWidget {
                         : null,
                     backgroundColor: Colors.grey,
                     child: project['imageUrl'] == 'No image URL'
-                        ? Icon(Icons.person, color: Colors.white)
+                        ? const Icon(Icons.person, color: Colors.white)
                         : null,
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         project['uploader_name'],
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 17,
                         ),
                       ),
-                      Text(
+                      const Text(
                         'Student',
                         style: TextStyle(
                           color: Colors.grey,
@@ -326,7 +323,7 @@ class ProjectCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Spacer(),
+                  const Spacer(),
                   /*ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
@@ -344,20 +341,20 @@ class ProjectCard extends StatelessWidget {
                   ),*/
                 ],
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Text(
                 project['project_name'],
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
                 ),
               ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               Text(project['description'],
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 13,
                   )),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               Wrap(
                 spacing: 10.0,
                 runSpacing: 4.0,
@@ -366,12 +363,13 @@ class ProjectCard extends StatelessWidget {
                     .map((tag) => Chip(
                           label: Text(
                             tag.trim(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 13.0, // Adjust font size here
                             ),
                           ),
                           backgroundColor: Colors.blue.shade100,
-                          padding: EdgeInsets.all(4.0), // Adjust padding here
+                          padding:
+                              const EdgeInsets.all(4.0), // Adjust padding here
                           materialTapTargetSize: MaterialTapTargetSize
                               .shrinkWrap, // Reduce tap target size
                         ))
@@ -388,15 +386,14 @@ class ProjectCard extends StatelessWidget {
 class FilterScreen extends StatefulWidget {
   final List<String> selectedCategories;
 
-  const FilterScreen({Key? key, required this.selectedCategories})
-      : super(key: key);
+  const FilterScreen({super.key, required this.selectedCategories});
 
   @override
   _FilterScreenState createState() => _FilterScreenState();
 }
 
 class _FilterScreenState extends State<FilterScreen> {
-  List<String> _categories = [];
+  final List<String> _categories = [];
   late List<String> _tempSelectedCategories;
 
   @override
@@ -413,12 +410,12 @@ class _FilterScreenState extends State<FilterScreen> {
         .collection('projects')
         .get()
         .then((querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
+      for (var doc in querySnapshot.docs) {
         String tagsString = doc['tags'];
         List<String> tags =
             tagsString.split(',').map((tag) => tag.trim()).toList();
         tagsSet.addAll(tags); // Adding tags to the set
-      });
+      }
     });
 
     // Convert the set to a list
@@ -482,7 +479,7 @@ class _FilterScreenState extends State<FilterScreen> {
 class JobPostScreen extends StatefulWidget {
   final Map<String, dynamic> project;
 
-  const JobPostScreen({Key? key, required this.project}) : super(key: key);
+  const JobPostScreen({super.key, required this.project});
 
   @override
   _JobPostScreenState createState() => _JobPostScreenState();
@@ -491,7 +488,7 @@ class JobPostScreen extends StatefulWidget {
 class _JobPostScreenState extends State<JobPostScreen> {
   bool _hasApplied = false;
   bool _isUploader = false;
-  List<String> _appliedProjectIds = [];
+  final List<String> _appliedProjectIds = [];
 
   @override
   void initState() {
@@ -500,7 +497,7 @@ class _JobPostScreenState extends State<JobPostScreen> {
   }
 
   Future<void> _checkApplicationStatus() async {
-    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
     final User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
@@ -513,7 +510,7 @@ class _JobPostScreenState extends State<JobPostScreen> {
       }
 
       // Check if the user has already applied for this specific project
-      final QuerySnapshot applications = await _firestore
+      final QuerySnapshot applications = await firestore
           .collection('applications')
           .where('project_id', isEqualTo: widget.project['project_id'])
           .where('user_id', isEqualTo: user.uid)
@@ -578,12 +575,12 @@ class _JobPostScreenState extends State<JobPostScreen> {
   }
 
   Future<void> _applyForProject() async {
-    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       final String uid = user.uid;
       final DocumentSnapshot userData =
-          await _firestore.collection('users').doc(uid).get();
+          await firestore.collection('users').doc(uid).get();
 
       if (userData.exists) {
         final String firstName = userData['firstName'];
@@ -605,7 +602,7 @@ class _JobPostScreenState extends State<JobPostScreen> {
           print('Notification sent successfully.');
 
           // Store the application in Firestore
-          await _firestore.collection('applications').add({
+          await firestore.collection('applications').add({
             'project_id': widget.project['project_id'],
             'user_id': uid,
           });
@@ -640,116 +637,116 @@ class _JobPostScreenState extends State<JobPostScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Client',
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               Text(
                 widget.project['uploader_name'] ?? 'No username',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 21.0,
                   fontWeight: FontWeight.w300,
                 ),
               ),
-              SizedBox(height: 8.0),
-              Divider(
+              const SizedBox(height: 8.0),
+              const Divider(
                 color: Colors.grey,
                 thickness: 1,
                 height: 15,
                 indent: 15,
                 endIndent: 15,
               ),
-              Text(
+              const Text(
                 'Client email',
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               Text(
                 widget.project['client_email'] ?? 'No description',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 21.0,
                   fontWeight: FontWeight.w300,
                 ),
               ),
-              SizedBox(height: 8.0),
-              Divider(
+              const SizedBox(height: 8.0),
+              const Divider(
                 color: Colors.grey,
                 thickness: 1,
                 height: 15,
                 indent: 15,
                 endIndent: 15,
               ),
-              Text(
+              const Text(
                 'Status',
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               Text(
                 widget.project['status'] ?? 'No status',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 21.0,
                   fontWeight: FontWeight.w300,
                 ),
               ),
-              SizedBox(height: 16.0),
-              Divider(
+              const SizedBox(height: 16.0),
+              const Divider(
                 color: Colors.grey,
                 thickness: 1,
                 height: 15,
                 indent: 15,
                 endIndent: 15,
               ),
-              Text(
+              const Text(
                 'Description',
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               Text(
                 widget.project['description'] ?? 'No description',
-                style: TextStyle(fontSize: 16.0),
+                style: const TextStyle(fontSize: 16.0),
               ),
-              SizedBox(height: 10.0),
-              Divider(
+              const SizedBox(height: 10.0),
+              const Divider(
                 color: Colors.grey,
                 thickness: 1,
                 height: 15,
                 indent: 15,
                 endIndent: 15,
               ),
-              Text(
+              const Text(
                 'Skills Required',
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               Wrap(
                 spacing: 10.0,
                 children: (widget.project['tags'] ?? '')
                     .split(',')
                     .map<Widget>((tag) => Chip(
                           label: Text(tag.trim()),
-                          shape: StadiumBorder(),
+                          shape: const StadiumBorder(),
                           backgroundColor: Colors.blue.shade100,
                         ))
                     .toList(),
               ),
-              SizedBox(height: 16.0),
-              Divider(
+              const SizedBox(height: 16.0),
+              const Divider(
                 color: Colors.grey,
                 thickness: 1,
                 height: 15,
@@ -758,13 +755,13 @@ class _JobPostScreenState extends State<JobPostScreen> {
               ),
               Text(
                 'Posted On: ${widget.project['timestamp'] ?? 'No date'}',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 32.0),
-              Divider(
+              const SizedBox(height: 32.0),
+              const Divider(
                 color: Colors.grey,
                 thickness: 1,
                 height: 15,
@@ -779,13 +776,22 @@ class _JobPostScreenState extends State<JobPostScreen> {
                       ? null
                       : () async {
                           await _applyForProject();
+                          final String clientEmail =
+                              widget.project['client_email'] ??
+                                  ''; // Fetch client's email from project
+                          final String subject =
+                              'Application for Project: ${widget.project['project_name'] ?? ''}';
+                          const String body =
+                              'hey! i would love to collaborate with you for the above mentioned project. here are my details.';
+
+                          await _sendWorkViaGmail(clientEmail, subject, body);
                         },
                   child: Text(
                       _appliedProjectIds.contains(widget.project['project_id'])
                           ? 'Already Applied'
                           : _isUploader
                               ? 'You are the uploader'
-                              : 'Apply for Job'),
+                              : 'Apply for project'),
                 ),
               ),
             ],

@@ -1,22 +1,19 @@
-import 'package:classico/addProject.dart';
 import 'package:classico/dashboard.dart';
 import 'package:classico/firebase_options.dart';
-import 'package:classico/login.dart';
-import 'package:classico/message1.dart';
 import 'package:classico/onboard.dart';
-import 'package:classico/profile1.dart';
 
-import 'package:classico/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -33,10 +30,10 @@ class MyApp extends StatelessWidget {
               primarySwatch: Colors.blue,
               visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
-            home: AuthWrapper(),
+            home: const AuthWrapper(),
           );
         } else {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         }
       },
     );
@@ -45,18 +42,20 @@ class MyApp extends StatelessWidget {
 
 // ignore: non_constant_identifier_names
 class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         }
         if (snapshot.hasData) {
-          return DashboardScreen(); // The screen you want to show when logged in
+          return const DashboardScreen(); // The screen you want to show when logged in
         }
-        return Onboard(); // The login screen
+        return const Onboard(); // The login screen
       },
     );
   }

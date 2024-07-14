@@ -13,7 +13,8 @@ class CompleteProfileScreen extends StatefulWidget {
   final String password;
   final List<String> interests;
 
-  CompleteProfileScreen({
+  const CompleteProfileScreen({
+    super.key,
     required this.username,
     required this.email,
     required this.password,
@@ -52,8 +53,8 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
 
     try {
       // Validate the bio length
-      if (_bioController.text.split(' ').length < 25) {
-        _showErrorDialog('Bio must be at least 25 words long.');
+      if (_bioController.text.split(' ').length < 10) {
+        _showErrorDialog('Bio must be at least 10 words long.');
         return;
       }
 
@@ -69,7 +70,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
           final ref = _storage
               .ref()
               .child('user_images')
-              .child(newUser.user!.uid + '.jpg');
+              .child('${newUser.user!.uid}.jpg');
           await ref.putData(bytes);
           imageUrl = await ref.getDownloadURL();
         }
@@ -87,7 +88,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
 
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => DashboardScreen()),
+          MaterialPageRoute(builder: (context) => const DashboardScreen()),
         );
       }
     } catch (e) {
@@ -104,11 +105,11 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Error'),
+        title: const Text('Error'),
         content: Text(message),
         actions: <Widget>[
           TextButton(
-            child: Text('OK'),
+            child: const Text('OK'),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -122,7 +123,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Complete Your Profile'),
+        title: const Text('Complete Your Profile'),
       ),
       body: Center(
         child: Padding(
@@ -143,7 +144,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                             as ImageProvider?
                         : null,
                     child: _image == null
-                        ? Icon(
+                        ? const Icon(
                             Icons.camera_alt,
                             color: Colors.white,
                             size: 50,
@@ -151,52 +152,55 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                         : null,
                   ),
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 TextField(
                   controller: _firstNameController,
                   decoration: InputDecoration(
                     hintText: 'First name',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: Colors.blue),
+                      borderSide: const BorderSide(color: Colors.blue),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: Colors.blue, width: 2),
+                      borderSide:
+                          const BorderSide(color: Colors.blue, width: 2),
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 TextField(
                   controller: _lastNameController,
                   decoration: InputDecoration(
                     hintText: 'Last name',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: Colors.blue),
+                      borderSide: const BorderSide(color: Colors.blue),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: Colors.blue, width: 2),
+                      borderSide:
+                          const BorderSide(color: Colors.blue, width: 2),
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 TextField(
                   controller: _usnController,
                   decoration: InputDecoration(
                     hintText: 'USN',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: Colors.blue),
+                      borderSide: const BorderSide(color: Colors.blue),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: Colors.blue, width: 2),
+                      borderSide:
+                          const BorderSide(color: Colors.blue, width: 2),
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 TextField(
                   controller: _bioController,
                   minLines: 5,
@@ -205,27 +209,29 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                     hintText: 'Bio',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: Colors.blue),
+                      borderSide: const BorderSide(color: Colors.blue),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: Colors.blue, width: 2),
+                      borderSide:
+                          const BorderSide(color: Colors.blue, width: 2),
                     ),
                   ),
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: _isLoading ? null : _signUp,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 50, vertical: 15),
                   ),
                   child: _isLoading
-                      ? CircularProgressIndicator(
+                      ? const CircularProgressIndicator(
                           valueColor:
                               AlwaysStoppedAnimation<Color>(Colors.white),
                         )
-                      : Text(
+                      : const Text(
                           'Confirm',
                           style: TextStyle(
                             fontSize: 16.0,

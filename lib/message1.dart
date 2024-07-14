@@ -13,7 +13,8 @@ class FeedScreen extends StatefulWidget {
   final int selectedIndex;
   final Function(int) onItemTapped;
 
-  FeedScreen({required this.selectedIndex, required this.onItemTapped});
+  const FeedScreen(
+      {super.key, required this.selectedIndex, required this.onItemTapped});
 
   @override
   _FeedScreenState createState() => _FeedScreenState();
@@ -41,19 +42,19 @@ class _FeedScreenState extends State<FeedScreen> {
       case 0:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => DashboardScreen()),
+          MaterialPageRoute(builder: (context) => const DashboardScreen()),
         );
         break;
       case 1:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SearchScreen()),
+          MaterialPageRoute(builder: (context) => const SearchScreen()),
         );
         break;
       case 2:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => AddProjectPage()),
+          MaterialPageRoute(builder: (context) => const AddProjectPage()),
         );
         break;
       case 3:
@@ -62,7 +63,7 @@ class _FeedScreenState extends State<FeedScreen> {
       case 4:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ProfileScreen()),
+          MaterialPageRoute(builder: (context) => const ProfileScreen()),
         );
         break;
     }
@@ -179,7 +180,7 @@ class _FeedScreenState extends State<FeedScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Feed'),
+        title: const Text('Feed'),
       ),
       body: Column(
         children: [
@@ -190,18 +191,18 @@ class _FeedScreenState extends State<FeedScreen> {
                 Expanded(
                   child: TextField(
                     controller: _textController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: 'Write something...',
                     ),
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 /*IconButton(
                   icon: Icon(Icons.image),
                   onPressed: _pickImage,
                 ),*/
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () {
                     _uploadPost(); // Call the function correctly
@@ -209,7 +210,7 @@ class _FeedScreenState extends State<FeedScreen> {
                       _textController.clear();
                     }
                   },
-                  child: Text('Post'),
+                  child: const Text('Post'),
                 ),
               ],
             ),
@@ -222,7 +223,7 @@ class _FeedScreenState extends State<FeedScreen> {
                   .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
                 final posts = snapshot.data!.docs;
                 return ListView.builder(
@@ -239,7 +240,7 @@ class _FeedScreenState extends State<FeedScreen> {
                       likes: post['likes'],
                       comments: post['comments'],
                       onLike: () => _likePost(post.id),
-                      likedBy: [],
+                      likedBy: const [],
                     );
                   },
                 );
@@ -273,7 +274,7 @@ class _FeedScreenState extends State<FeedScreen> {
         ],
         currentIndex: widget.selectedIndex,
         onTap: _onItemTapped, // Use the local function to handle navigation
-        selectedItemColor: Color(0xFF009FFF), // selected item color
+        selectedItemColor: const Color(0xFF009FFF), // selected item color
         unselectedItemColor: Colors.grey, // unselected item color
         type: BottomNavigationBarType.fixed, // to show all items
       ),
@@ -284,7 +285,7 @@ class _FeedScreenState extends State<FeedScreen> {
 class CommentsScreen extends StatefulWidget {
   final String postId;
 
-  CommentsScreen({required this.postId});
+  const CommentsScreen({super.key, required this.postId});
 
   @override
   _CommentsScreenState createState() => _CommentsScreenState();
@@ -349,7 +350,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Comments'),
+        title: const Text('Comments'),
       ),
       body: Column(
         children: [
@@ -363,7 +364,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
                 final comments = snapshot.data!.docs;
                 return ListView.builder(
@@ -376,7 +377,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                       subtitle: Text(data['text']),
                       trailing: Text(
                         data['timestamp'].toDate().toString(),
-                        style: TextStyle(fontSize: 10),
+                        style: const TextStyle(fontSize: 10),
                       ),
                     );
                   },
@@ -391,16 +392,16 @@ class _CommentsScreenState extends State<CommentsScreen> {
                 Expanded(
                   child: TextField(
                     controller: _commentController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: 'Write a comment...',
                     ),
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: _postComment,
-                  child: Text('Post'),
+                  child: const Text('Post'),
                 ),
               ],
             ),
@@ -422,7 +423,8 @@ class PostItem extends StatefulWidget {
   final List<dynamic> likedBy;
   final List<dynamic> comments;
 
-  PostItem({
+  const PostItem({
+    super.key,
     required this.postId,
     required this.username,
     required this.userProfileUrl,
@@ -442,6 +444,7 @@ class PostItem extends StatefulWidget {
 class _PostItemState extends State<PostItem> {
   bool _isLiked = false;
   int _likes = 0;
+  bool _isFavorited = false;
 
   @override
   void initState() {
@@ -482,10 +485,16 @@ class _PostItemState extends State<PostItem> {
     }
   }
 
+  void _toggleFavorite() {
+    setState(() {
+      _isFavorited = !_isFavorited; // Toggle the favorite state
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(8.0),
+      margin: const EdgeInsets.all(8.0),
       child: Column(
         children: [
           ListTile(
@@ -516,7 +525,7 @@ class _PostItemState extends State<PostItem> {
                 ],
               ),
               IconButton(
-                icon: Icon(Icons.chat_bubble_outline),
+                icon: const Icon(Icons.chat_bubble_outline),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -528,8 +537,11 @@ class _PostItemState extends State<PostItem> {
                 },
               ),
               IconButton(
-                icon: Icon(Icons.favorite_border),
-                onPressed: () {},
+                icon: Icon(
+                  _isFavorited ? Icons.favorite : Icons.favorite_border,
+                  color: _isFavorited ? Colors.red : null,
+                ),
+                onPressed: _toggleFavorite,
               ),
               /*IconButton(
                 icon: Icon(Icons.share),

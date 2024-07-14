@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 class FilterScreen extends StatefulWidget {
   final List<String> selectedCategories;
 
-  const FilterScreen({Key? key, required this.selectedCategories})
-      : super(key: key);
+  const FilterScreen({super.key, required this.selectedCategories});
 
   @override
   State<FilterScreen> createState() => _FilterScreenState();

@@ -7,19 +7,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: AddProjectPage(),
     );
   }
 }
 
 class AddProjectPage extends StatefulWidget {
+  const AddProjectPage({super.key});
+
   @override
   AddProjectState createState() => AddProjectState();
 }
@@ -42,13 +46,13 @@ class AddProjectState extends State<AddProjectPage> {
       case 0:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => DashboardScreen()),
+          MaterialPageRoute(builder: (context) => const DashboardScreen()),
         );
         break;
       case 1:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SearchScreen()),
+          MaterialPageRoute(builder: (context) => const SearchScreen()),
         );
         break;
       case 2:
@@ -68,7 +72,7 @@ class AddProjectState extends State<AddProjectPage> {
       case 4:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ProfileScreen()),
+          MaterialPageRoute(builder: (context) => const ProfileScreen()),
         );
         // Handle profile action here
         break;
@@ -96,7 +100,7 @@ class AddProjectState extends State<AddProjectPage> {
       User? user = FirebaseAuth.instance.currentUser;
       if (user == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('No user signed in')),
+          const SnackBar(content: Text('No user signed in')),
         );
         return;
       }
@@ -109,7 +113,7 @@ class AddProjectState extends State<AddProjectPage> {
 
       if (!userDoc.exists) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('User details not found')),
+          const SnackBar(content: Text('User details not found')),
         );
         return;
       }
@@ -130,7 +134,7 @@ class AddProjectState extends State<AddProjectPage> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Project uploaded successfully')),
+        const SnackBar(content: Text('Project uploaded successfully')),
       );
       _projectNameController.clear();
       _descriptionController.clear();
@@ -177,38 +181,38 @@ class AddProjectState extends State<AddProjectPage> {
           children: [
             TextField(
               controller: _projectNameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Project name',
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _descriptionController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Description',
               ),
               maxLines: 3,
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _tagsController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Tags',
                 suffixIcon: Icon(Icons.search),
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Email',
               ),
             ),
-            SizedBox(height: 25.0),
+            const SizedBox(height: 25.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Completed Project',
                   style: TextStyle(fontSize: 15),
                 ),
@@ -222,12 +226,12 @@ class AddProjectState extends State<AddProjectPage> {
                 ),
               ],
             ),
-            SizedBox(height: 16.0),
-            Text(
+            const SizedBox(height: 16.0),
+            const Text(
               'Project Status',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10.0),
+            const SizedBox(height: 10.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -236,15 +240,15 @@ class AddProjectState extends State<AddProjectPage> {
                 _buildRadioButton('Almost done'),
               ],
             ),
-            SizedBox(height: 32.0),
+            const SizedBox(height: 32.0),
             Center(
               child: ElevatedButton(
                 onPressed: () => _uploadProject(),
-                child: Text('Upload'),
                 style: ElevatedButton.styleFrom(
                   padding:
-                      EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+                      const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
                 ),
+                child: const Text('Upload'),
               ),
             ),
           ],
@@ -275,7 +279,7 @@ class AddProjectState extends State<AddProjectPage> {
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Color(0xFF009FFF),
+        selectedItemColor: const Color(0xFF009FFF),
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
       ),
@@ -284,13 +288,15 @@ class AddProjectState extends State<AddProjectPage> {
 }
 
 class SearchScreen1 extends StatelessWidget {
+  const SearchScreen1({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Search'),
+        title: const Text('Search'),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Search Screen'),
       ),
     );

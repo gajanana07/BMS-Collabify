@@ -1,16 +1,9 @@
 import 'package:classico/onboardcontent.dart';
 import 'package:classico/signup.dart';
 import 'package:flutter/material.dart';
-import 'package:classico/addProject.dart';
 import 'package:classico/widget_support.dart';
-import 'package:classico/dashboard.dart';
-import 'package:classico/message1.dart';
 
-import 'package:classico/profile1.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'search.dart';
 
 class Onboard extends StatefulWidget {
   const Onboard({super.key});
@@ -108,7 +101,7 @@ class _OnboardState extends State<Onboard> {
               if (currentIndex == contents.length - 1) {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => SignUpScreen()),
+                  MaterialPageRoute(builder: (context) => const SignUpScreen()),
                 );
               }
               _controller.nextPage(
@@ -118,7 +111,7 @@ class _OnboardState extends State<Onboard> {
             },
             child: Container(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
+                gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
