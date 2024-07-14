@@ -327,7 +327,7 @@ class ProjectCard extends StatelessWidget {
                     ],
                   ),
                   Spacer(),
-                  ElevatedButton(
+                  /*ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
@@ -341,7 +341,7 @@ class ProjectCard extends StatelessWidget {
                       minimumSize: Size(80, 35),
                     ),
                     child: Text('CONNECT', style: TextStyle(fontSize: 13)),
-                  ),
+                  ),*/
                 ],
               ),
               SizedBox(height: 10),
