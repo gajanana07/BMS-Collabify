@@ -51,6 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   String _areaOfInterest = '';
   String _githubLink = '';
   String _resumeLink = '';
+  String _linkedInLink = '';
 
   @override
   void initState() {
@@ -219,35 +220,19 @@ class _ProfileScreenState extends State<ProfileScreen>
           ),
           Card(
             child: ListTile(
-              leading: Icon(Icons.picture_as_pdf, color: Colors.blue),
+              leading: Icon(Icons.link, color: Colors.blue),
               title: Text(
-                'Resume',
+                'LinkedIn',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.blue,
                 ),
               ),
-              subtitle: _resumeLink.isEmpty
-                  ? Text('Not provided')
-                  : InkWell(
-                      onTap: () async {
-                        if (await canLaunch(_resumeLink)) {
-                          await launch(_resumeLink);
-                        } else {
-                          throw 'Could not launch $_resumeLink';
-                        }
-                      },
-                      child: Text(
-                        'View Resume',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
+              subtitle:
+                  Text(_linkedInLink.isEmpty ? 'Not provided' : _linkedInLink),
               trailing: IconButton(
-                icon: Icon(Icons.upload_file),
-                onPressed: _editResume,
+                icon: Icon(Icons.edit),
+                onPressed: _editLinkedIn,
               ),
             ),
           ),
@@ -438,6 +423,54 @@ class _ProfileScreenState extends State<ProfileScreen>
     }
   }
 
+  void _editLinkedIn() {
+    final TextEditingController linkedInController =
+        TextEditingController(text: _linkedInLink);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Edit LinkedIn Link'),
+          content: TextField(
+            controller: linkedInController,
+            decoration: InputDecoration(labelText: 'LinkedIn Link'),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(_user?.uid)
+                    .update({
+                  'linkedIn': linkedInController.text,
+                }).then((value) {
+                  setState(() {
+                    _linkedInLink = linkedInController.text;
+                  });
+                  Navigator.of(context).pop();
+                }).catchError((error) {
+                  print('Failed to update LinkedIn link: $error');
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to update LinkedIn link')),
+                  );
+                });
+              },
+              child: Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildProjectDetails() {
     return Column(
       children: [
@@ -484,11 +517,40 @@ class _ProfileScreenState extends State<ProfileScreen>
                 itemBuilder: (context, index) {
                   var data = documents[index].data() as Map<String, dynamic>;
                   print('Building ListTile for: $data');
-                  return ListTile(
+                  /*return ListTile(
                     title: Text(data['project_name'] ?? 'No Project Name'),
                     subtitle: _selectedOption == 'Applied Projects'
                         ? Text(data['project_tags'] ?? 'No Description')
                         : Text(data['tags'] ?? 'No Description'),
+                  );*/
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: ListTile(
+                        title: Text(
+                          data['project_name'] ?? 'No Project Name',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        subtitle: _selectedOption == 'Applied Projects'
+                            ? Text(data['project_tags'] ?? 'No Description')
+                            : Text(data['tags'] ?? 'No Description'),
+                      ),
+                    ),
                   );
                 },
               );
