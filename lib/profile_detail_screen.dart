@@ -16,6 +16,7 @@ class ProfileDetailsScreen extends StatelessWidget {
     String bio = profile['bio'] ?? '';
     String skills = profile['skills'] ?? '';
     String githubLink = profile['github'] ?? '';
+    String linkedInLink = profile['linkedIn'] ?? '';
     //String _resumeLink = profile['resume'] ?? '';
 
     return Scaffold(
@@ -44,8 +45,8 @@ class ProfileDetailsScreen extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       userName,
-                      style:
-                          const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     Text(usn),
                     Text(email),
@@ -54,14 +55,15 @@ class ProfileDetailsScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            _buildAboutSection(bio, skills, githubLink),
+            _buildAboutSection(bio, skills, githubLink, linkedInLink),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildAboutSection(String bio, String skills, String githubLink) {
+  Widget _buildAboutSection(
+      String bio, String skills, String githubLink, String linkedInLink) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -91,7 +93,23 @@ class ProfileDetailsScreen extends StatelessWidget {
             ),
           ),
         ),
-
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          child: Card(
+            child: ListTile(
+              //leading: Icon(Icons.code, color: Colors.blue),
+              title: const Text(
+                'Linked In',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
+              ),
+              subtitle:
+                  Text(linkedInLink.isEmpty ? 'Not provided' : linkedInLink),
+            ),
+          ),
+        ),
         /*Card(
           child: ListTile(
             leading: Icon(Icons.picture_as_pdf, color: Colors.blue),
@@ -211,7 +229,8 @@ class ProjectCard extends StatelessWidget {
                           vertical: 8.0), // Adjust padding as needed
                       minimumSize: const Size(80, 35),
                     ),
-                    child: const Text('CONNECT', style: TextStyle(fontSize: 13)),
+                    child:
+                        const Text('CONNECT', style: TextStyle(fontSize: 13)),
                   ),
                 ],
               ),
@@ -242,7 +261,8 @@ class ProjectCard extends StatelessWidget {
                             ),
                           ),
                           backgroundColor: Colors.blue.shade100,
-                          padding: const EdgeInsets.all(4.0), // Adjust padding here
+                          padding:
+                              const EdgeInsets.all(4.0), // Adjust padding here
                           materialTapTargetSize: MaterialTapTargetSize
                               .shrinkWrap, // Reduce tap target size
                         ))
@@ -283,7 +303,8 @@ class ProjectsListScreen extends StatelessWidget {
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('No projects found for this user.'));
+            return const Center(
+                child: Text('No projects found for this user.'));
           }
 
           var projects = snapshot.data!.docs;

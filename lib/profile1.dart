@@ -461,7 +461,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                   print('Failed to update LinkedIn link: $error');
                   Navigator.of(context).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Failed to update LinkedIn link')),
+                    const SnackBar(
+                        content: Text('Failed to update LinkedIn link')),
                   );
                 });
               },
@@ -578,7 +579,8 @@ class _ProfileScreenState extends State<ProfileScreen>
             onPressed: () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const NotificationScreen()),
+                MaterialPageRoute(
+                    builder: (context) => const NotificationScreen()),
               );
             },
           ),
@@ -604,7 +606,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                                         _profileImageUrl)
                                     : null,
                                 child: _profileImageUrl.isEmpty
-                                    ? const Icon(Icons.account_circle, size: 100)
+                                    ? const Icon(Icons.account_circle,
+                                        size: 100)
                                     : null,
                               ),
                               const SizedBox(width: 20),
