@@ -151,7 +151,7 @@ Firebase:
 Firebase is Google's mobile and web app development platform with a wide range of tools and services.
 ## Screenshots
 
-<p align="center" style="display: grid; grid-template-columns: repeat(5, 1fr); grid-gap: 10px; margin-bottom: 10px;">
+<p align="center" style="display: grid; grid-template-columns: repeat(5, 0.5fr); grid-gap: 10px; margin-bottom: 10px;">
   <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/dashboard1.png" height="300">
   <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/dashboard2.png" height="300">
   <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/signup.png" height="300">
