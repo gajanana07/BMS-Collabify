@@ -130,7 +130,7 @@ These steps will help you set up and run both the server and the app smoothly. Y
 ## Technology Used
 <div style="display: flex; justify-content: center; gap: 50px;align-items: center;">
 
-<img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/database.png" width="45%">
+<img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/database.png" width="90%">
 
 </div>
 
@@ -151,41 +151,39 @@ Firebase:
 Firebase is Google's mobile and web app development platform with a wide range of tools and services.
 ## Screenshots
 
-<img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/dashboard1.png" width="200">
+<p align="left" style="display: grid; grid-template-columns: repeat(5, 1fr); grid-gap: 10px; margin-bottom: 10px;">
+  <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/dashboard1.png" height="300">
+  <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/dashboard2.png" height="300">
+  <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/signup.png" height="300">
+  <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/signup2.png" height="300">
+  <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/signup3.png" height="300">
+</p>
 
-<img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/dashboard2.png" width="200">
+<p align="left" style="display: grid; grid-template-columns: repeat(5, 1fr); grid-gap: 10px; margin-bottom: 10px;">
+  <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/login.png" height="300">
+  <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/lol1.png" height="300">
+  <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/lol2.png" height="300">
+  <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/profile1.png" height="300">
+  <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/profile2.png" height="300">
+</p>
 
-<img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/signup.png" width="200">
+<p align="left" style="display: grid; grid-template-columns: repeat(5, 1fr); grid-gap: 10px; margin-bottom: 10px;">
+  <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/search1.png" height="300">
+  <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/search2.png" height="300">
+  <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/search3.png" height="300">
+  <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/search4.png" height="300">
+  <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/search5.png" height="300">
+</p>
 
-<img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/signup2.png" width="200">
+<p align="left" style="display: grid; grid-template-columns: repeat(3, 1fr); grid-gap: 10px; margin-bottom: 10px;">
+  <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/upload.png" height="300">
+  <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/feed1.png" height="300">
+  <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/feed2.png" height="300">
+</p>
 
-<img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/signup3.png" width="200">
 
-<img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/login.png" width="200">
 
-<img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/lol1.png" width="200">
 
-<img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/lol2.png" width="200">
-
-<img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/profile1.png" width="200">
-
-<img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/profile2.png" width="200">
-
-<img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/search1.png" width="200">
-
-<img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/search2.png" width="200">
-
-<img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/search3.png" width="200">
-
-<img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/search4.png" width="200">
-
-<img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/search5.png" width="200">
-
-<img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/upload.png" width="200">
-
-<img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/feed1.png" width="200">
-
-<img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/feed2.png" width="200">
 
 
 ## The Team
