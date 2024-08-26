@@ -151,7 +151,7 @@ Firebase:
 Firebase is Google's mobile and web app development platform with a wide range of tools and services.
 ## Screenshots
 
-<p align="center" style="display: grid; grid-template-columns: repeat(5, 0.5fr); grid-gap: 10px; margin-bottom: 10px;">
+<p align="left" style="display: grid; grid-template-columns: repeat(5, 0.5fr); grid-gap: 10px; margin-bottom: 10px;">
   <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/dashboard1.png" height="300">
   <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/dashboard2.png" height="300">
   <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/signup.png" height="300">
@@ -159,7 +159,7 @@ Firebase is Google's mobile and web app development platform with a wide range o
   <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/signup3.png" height="300">
 </p>
 
-<p align="center" style="display: grid; grid-template-columns: repeat(5, 1fr); grid-gap: 10px; margin-bottom: 10px;">
+<p align="left" style="display: grid; grid-template-columns: repeat(5, 1fr); grid-gap: 10px; margin-bottom: 10px;">
   <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/login.png" height="300">
   <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/lol1.png" height="300">
   <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/lol2.png" height="300">
@@ -167,7 +167,7 @@ Firebase is Google's mobile and web app development platform with a wide range o
   <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/profile2.png" height="300">
 </p>
 
-<p align="center" style="display: grid; grid-template-columns: repeat(5, 1fr); grid-gap: 10px; margin-bottom: 10px;">
+<p align="left" style="display: grid; grid-template-columns: repeat(5, 1fr); grid-gap: 10px; margin-bottom: 10px;">
   <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/search1.png" height="300">
   <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/search2.png" height="300">
   <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/search3.png" height="300">
@@ -175,7 +175,7 @@ Firebase is Google's mobile and web app development platform with a wide range o
   <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/search5.png" height="300">
 </p>
 
-<p align="center" style="display: grid; grid-template-columns: repeat(3, 1fr); grid-gap: 10px; margin-bottom: 10px;">
+<p align="left" style="display: grid; grid-template-columns: repeat(3, 1fr); grid-gap: 10px; margin-bottom: 10px;">
   <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/upload.png" height="300">
   <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/feed1.png" height="300">
   <img src="https://github.com/gajanana07/BMS-Collabify/blob/master/assets/feed2.png" height="300">
@@ -202,12 +202,11 @@ Firebase is Google's mobile and web app development platform with a wide range o
 
 **Rahul N Raju**
 
-[![GitHub](https://img.shields.io/badge/GitHub-black?style=flat&logo=github)]()
+[![GitHub](https://img.shields.io/badge/GitHub-black?style=flat&logo=github)](https://github.com/Rahul-891)
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-blue?style=flat&logo=linkedin)](https://www.linkedin.com/in/rahul-n-raju-ab6919247/)
 
 **Revanth K**
 
-[![GitHub](https://img.shields.io/badge/GitHub-black?style=flat&logo=github)]()
+[![GitHub](https://img.shields.io/badge/GitHub-black?style=flat&logo=github)](https://github.com/)
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-blue?style=flat&logo=linkedin)]()
