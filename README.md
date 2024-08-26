@@ -188,7 +188,7 @@ Firebase is Google's mobile and web app development platform with a wide range o
 
 ## The Team
 
-**S Gajanana nayak**
+**S Gajanana Nayak**
 
 [![GitHub](https://img.shields.io/badge/GitHub-black?style=flat&logo=github)](https://github.com/gajanana07)
 
